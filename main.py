@@ -2,27 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from mainwindow import *
 
-
-class Example(QWidget):
-
+class Main(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        self.initUI()
-
-    def initUI(self):
-        self.resize(700, 500)
-        self.center()
-        self.setWindowTitle('shnedule')
-        self.setWindowIcon(QIcon('web.png'))
-
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
         self.show()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)
+w = Main()
+w.show()
+sys.exit(app.exec_())
