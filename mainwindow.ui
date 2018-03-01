@@ -6,35 +6,91 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>454</width>
-    <height>235</height>
+    <width>508</width>
+    <height>348</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Расписание</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QTextEdit" name="price_box">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>110</y>
-      <width>113</width>
-      <height>20</height>
+      <x>120</x>
+      <y>10</y>
+      <width>104</width>
+      <height>71</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>160</y>
+      <x>10</x>
+      <y>10</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Price</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="tax_rate">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>100</y>
+      <width>42</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>20</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>47</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tax Rate</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="calc_tax_button">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>140</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Calculate Tax</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="results_window">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>180</y>
+      <width>131</width>
+      <height>71</height>
+     </rect>
     </property>
    </widget>
   </widget>
@@ -43,7 +99,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>454</width>
+     <width>508</width>
      <height>21</height>
     </rect>
    </property>

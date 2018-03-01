@@ -1,29 +1,35 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
 import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from mainwindow import *
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5 import uic
 
-class Main(QMainWindow):
+Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
+
+class MyApp(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.show()
-app = QApplication(sys.argv)
-w = Main()
-w.show()
-sys.exit(app.exec_())
+        self.ui.calc_tax_button.clicked.connect(self.CalculateTax)
+
+    def CalculateTax(self):
+        price = int(self.ui.price_box.toPlainText())
+        tax = (self.ui.tax_rate.value())
+        total_price = price + ((tax / 100) * price)
+        total_price_string = "The total price with tax is: " + str(total_price)
+        self.ui.results_window.setText(total_price_string)
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MyApp()
+    window.show()
+    sys.exit(app.exec_())
 
 
 #from bs4 import BeautifulSoup
 #import urllib.request
-#import os
-#import xlrd
-#import xlwt
+# import os
+# import xlrd
+# import xlwt
 #import openpyxl
 from openpyxl import load_workbook
 #from openpyxl.compat import range
