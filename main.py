@@ -11,6 +11,7 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.calc_tax_button.clicked.connect(self.CalculateTax)
+        self.ui.upd_btn.clicked.connect(self.Update)
 
     def CalculateTax(self):
         price = int(self.ui.price_box.toPlainText())
@@ -18,6 +19,10 @@ class MyApp(QMainWindow):
         total_price = price + ((tax / 100) * price)
         total_price_string = "The total price with tax is: " + str(total_price)
         self.ui.results_window.setText(total_price_string)
+
+    def Update(self):
+        print("Update started")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
