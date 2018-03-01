@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import uic
+import sqlite3
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
@@ -22,6 +23,14 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
+
+    cnnctn = sqlite3.connect('maindb.sqlite')
+    cursor = cnnctn.cursor()
+    cursor.execute("SELECT name FROM files")
+    results = cursor.fetchall()
+    print (results)
+
+    cnnctn.close()
     sys.exit(app.exec_())
 
 
