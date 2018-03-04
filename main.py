@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import uic
-import sqlite3
+from connect import def_conn
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
@@ -29,15 +29,14 @@ if __name__ == "__main__":
     window = MyApp()
     window.show()
 
-    cnnctn = sqlite3.connect('maindb.sqlite')
-    cursor = cnnctn.cursor()
+    cnx = def_conn()
+    cursor = cnx.cursor()
     cursor.execute("SELECT name FROM files")
     results = cursor.fetchall()
-    print (results)
+    print(results)
 
-    cnnctn.close()
+    cnx.close()
     sys.exit(app.exec_())
-
 
 #from bs4 import BeautifulSoup
 #import urllib.request
