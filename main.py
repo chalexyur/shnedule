@@ -5,13 +5,15 @@ from connect import def_conn
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
+
 class MyApp(QMainWindow):
     def __init__(self):
         super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.calc_tax_button.clicked.connect(self.CalculateTax)
-        self.ui.upd_btn.clicked.connect(self.Update)
+        self.ui.upd_btn.clicked.connect(self.update)
+        self.ui.badumButton.clicked.connect(self.badum)
 
     def CalculateTax(self):
         price = int(self.ui.price_box.toPlainText())
@@ -20,7 +22,15 @@ class MyApp(QMainWindow):
         total_price_string = "The total price with tax is: " + str(total_price)
         self.ui.results_window.setText(total_price_string)
 
-    def Update(self):
+    def badum(self):
+        cursor = cnx.cursor()
+        cursor.execute("SELECT groupname FROM groups")
+        grouplist = cursor.fetchone()
+        print(grouplist)
+
+        self.ui.groupComboBox.addItem(grouplist[0])
+
+    def update(self):
         print("Update started")
 
 
@@ -28,15 +38,10 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
-
     cnx = def_conn()
-    cursor = cnx.cursor()
-    cursor.execute("SELECT name FROM files")
-    results = cursor.fetchall()
-    print(results)
 
-    cnx.close()
     sys.exit(app.exec_())
+    cnx.close()
 
 #from bs4 import BeautifulSoup
 #import urllib.request
