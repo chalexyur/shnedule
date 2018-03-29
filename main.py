@@ -5,7 +5,6 @@ from connect import def_conn
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
-
 class MyApp(QMainWindow):
     def __init__(self):
         super(MyApp, self).__init__()
@@ -24,7 +23,7 @@ class MyApp(QMainWindow):
 
     def badum(self):
         cursor = cnx.cursor()
-        cursor.execute("SELECT groupname FROM groups")
+        cursor.execute("SELECT name FROM groups")
         grouplist = cursor.fetchone()
         print(grouplist)
 
