@@ -2,6 +2,16 @@ import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import uic
 from connect import def_conn
+from bs4 import BeautifulSoup
+import urllib.request
+import os
+import xlrd
+import xlwt
+import openpyxl
+from openpyxl import load_workbook
+from openpyxl.compat import range
+from openpyxl.utils import get_column_letter
+from xlutils3.copy import copy
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
@@ -10,27 +20,34 @@ class MyApp(QMainWindow):
         super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.calc_tax_button.clicked.connect(self.CalculateTax)
-        self.ui.upd_btn.clicked.connect(self.update)
-        self.ui.badumButton.clicked.connect(self.badum)
+        self.ui.dwnldButton.clicked.connect(self.download)
+        self.ui.parseButton.clicked.connect(self.parse)
+        self.ui.updGlButton.clicked.connect(self.updateGrouplist)
 
-    def CalculateTax(self):
-        price = int(self.ui.price_box.toPlainText())
-        tax = (self.ui.tax_rate.value())
-        total_price = price + ((tax / 100) * price)
-        total_price_string = "The total price with tax is: " + str(total_price)
-        self.ui.results_window.setText(total_price_string)
-
-    def badum(self):
+    def updateGrouplist(self):
         cursor = cnx.cursor()
-        cursor.execute("SELECT name FROM groups")
-        grouplist = cursor.fetchone()
+        cursor.execute("SELECT name,code,year FROM groups")
+        grouplist = cursor.fetchall()
+        print(type(grouplist))
         print(grouplist)
+        for group in grouplist:
+            print(type(group))
+            print('-'.join(map(str, group)))
+            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
 
-        self.ui.groupComboBox.addItem(grouplist[0])
+    def download(self):
+        print("downloading...")
+        html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
+        soup = BeautifulSoup(html_doc, "html.parser")
 
-    def update(self):
-        print("Update started")
+        for links in soup.find_all('a'):
+            if links.get('href').find("IIT-2k-17_18-vesna.xlsx") != -1:
+                link = links.get('href')
+                print(link)
+        urllib.request.urlretrieve(link, "files/1.xlsx")
+
+    def parse(self):
+        print("parsing...")
 
 
 if __name__ == "__main__":
@@ -42,25 +59,7 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
     cnx.close()
 
-#from bs4 import BeautifulSoup
-#import urllib.request
-# import os
-# import xlrd
-# import xlwt
-#import openpyxl
-from openpyxl import load_workbook
-#from openpyxl.compat import range
-#from openpyxl.utils import get_column_letter
-#from xlutils3.copy import copy
 
-# html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
-# soup = BeautifulSoup(html_doc, "html.parser")
-
-# for links in soup.find_all('a'):
-#     if links.get('href').find("IIT-2k-17_18-vesna.xlsx") != -1:
-#         link=links.get('href')
-# print(link)
-# urllib.request.urlretrieve(link, "files/1.xlsx")
 
 # size =os.path.getsize("files/1.xlsx")
 # print(size)
