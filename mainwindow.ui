@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-       <width>812</width>
-       <height>586</height>
+       <width>537</width>
+       <height>395</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,85 +18,6 @@
     <normaloff>icon.png</normaloff>icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="price_box">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>270</y>
-      <width>104</width>
-      <height>71</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>270</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Price</string>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="tax_rate">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>360</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>20</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>360</y>
-      <width>47</width>
-      <height>13</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Tax Rate</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="calc_tax_button">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>400</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Calculate Tax</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="results_window">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>440</y>
-      <width>131</width>
-      <height>71</height>
-     </rect>
-    </property>
-   </widget>
       <widget class="QPushButton" name="updGlButton">
           <property name="geometry">
               <rect>
@@ -183,7 +104,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-        <width>812</width>
+        <width>537</width>
      <height>21</height>
     </rect>
    </property>
