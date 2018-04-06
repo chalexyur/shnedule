@@ -1,7 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import uic
-from connect import def_conn
+from mysql.connector import MySQLConnection, Error
+
 from bs4 import BeautifulSoup
 import urllib.request
 import os
@@ -12,8 +13,26 @@ from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 from xlutils3.copy import copy
+from configparser import ConfigParser
+
+
+def read_db_config(filename='config.ini', section='mysql'):
+    parser = ConfigParser()
+    parser.read(filename)
+
+    db = {}
+    if parser.has_section(section):
+        items = parser.items(section)
+        for item in items:
+            db[item[0]] = item[1]
+    else:
+        raise Exception('{0} not found in the {1} file'.format(section, filename))
+
+    return db
+
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
+
 
 class MyApp(QMainWindow):
     def __init__(self):
@@ -25,7 +44,6 @@ class MyApp(QMainWindow):
         self.ui.updGlButton.clicked.connect(self.updateGrouplist)
 
     def updateGrouplist(self):
-        cursor = cnx.cursor()
         cursor.execute("SELECT name,code,year FROM groups")
         grouplist = cursor.fetchall()
         print(type(grouplist))
@@ -48,60 +66,30 @@ class MyApp(QMainWindow):
 
     def parse(self):
         print("parsing...")
+        from openpyxl import load_workbook
+        wb = load_workbook(filename='files/1.xlsx', read_only=True)
+        ws = wb['Лист1']
+        print(ws['F2'].value)
+
+        for row in ws.iter_rows(min_row=4, max_row=14, min_col=6, max_col=9):
+            # print(row[0].value,row[1].value,row[2].value,row[3].value)
+            try:
+                cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                    'NULL', ws['F2'].value, 1, 99, 88, row[0].value, row[1].value, row[2].value, row[3].value))
+                conn.commit()
+            except Error as error:
+                print(error)
+
+            # for cell in row:
+            #   print(cell.value)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MyApp()
     window.show()
-    cnx = def_conn()
+    dbconfig = read_db_config()
+    conn = MySQLConnection(**dbconfig)
+    cursor = conn.cursor()
 
     sys.exit(app.exec_())
-    cnx.close()
-
-
-
-# size =os.path.getsize("files/1.xlsx")
-# print(size)
-# f=open("files/latest.txt", 'w')
-# f.write(str(os.path.getsize("files/1.xlsx")))
-# f.close()
-# f=open("files/latest.txt", 'r')
-# print(f.readline())
-# f.close()
-
-#workbook = xlrd.open_workbook("files/1.xlsx")
-#sheet = workbook.sheet_by_index(0)
-# first_row = []
-# for col in range(sheet.ncols):
-#     first_row.append(sheet.cell_value(2,col) )
-# # tronsform the workbook to a list of dictionnary
-# data =[]
-# for row in range(1, sheet.nrows):
-#     elm = {}
-#     for col in range(sheet.ncols):
-#         elm[first_row[col]]=sheet.cell_value(row,col)
-#     data.append(elm)
-# print(data)
-
-#x=0
-#for rows in range(170):
-#    if sheet.row_values(2)[rows]=="ИКБО-06-16":
-#        print(rows)
-#        x=rows
-    #print(sheet.row_values(2)[rows])
-#vals = [sheet.row_values(rownum)[x] for rownum in range(73)]
-#print(vals)
-
-# wb = xlwt.Workbook()
-# ws = wb.add_sheet("1")
-# i=0
-# for rec in vals[0]:
-#     ws.write(i,1,rec[0])
-#     i =+ i
-# wb.save("files/2.xls")
-# wb = load_workbook(filename="files/1.xlsx", read_only=True)
-# #vals = [v[0].value for v in sheet.range('DY:EB')]
-# ws = wb['Лист1']
-# for cell in ws.rows:
-#     print(cell[128].value)
