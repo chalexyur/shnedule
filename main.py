@@ -2,7 +2,6 @@ import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5 import uic
 from mysql.connector import MySQLConnection, Error
-
 from bs4 import BeautifulSoup
 import urllib.request
 import os
@@ -69,19 +68,34 @@ class MyApp(QMainWindow):
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
-        print(ws['F2'].value)
 
-        for row in ws.iter_rows(min_row=4, max_row=14, min_col=6, max_col=9):
+        mir = 4
+        mar = mir + 71
+        mic = 6
+        mac = mic + 3
+        gr = ws['F2'].value
+        i = 0
+        number = 1
+
+        for row in ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac):
             # print(row[0].value,row[1].value,row[2].value,row[3].value)
+            print(i)
+            day = i // 12 + 1
+            if (number > 6):
+                number = 1
+            if (i % 2 == 0):
+                even = 0;
+            else:
+                even = 1
             try:
                 cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                    'NULL', ws['F2'].value, 1, 99, 88, row[0].value, row[1].value, row[2].value, row[3].value))
+                    'NULL', gr, day, number, even, row[0].value, row[1].value, row[2].value, row[3].value))
                 conn.commit()
             except Error as error:
                 print(error)
+            i += 1
+            number += even
 
-            # for cell in row:
-            #   print(cell.value)
 
 
 if __name__ == "__main__":
