@@ -15,6 +15,7 @@ from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 from xlutils3.copy import copy
 from configparser import ConfigParser
+import re
 
 
 def read_db_config(filename='config.ini', section='mysql'):
@@ -47,19 +48,30 @@ class MyApp(QMainWindow):
         self.statusBar().addWidget(self.ui.progressBar)
         self.ui.progressBar.hide()
 
-    def updateGrouplist(self):
-        self.ui.groupComboBox.clear()
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
         cursor.execute("SELECT name,code,year FROM groups")
         grouplist = cursor.fetchall()
-        print(type(grouplist))
-        print(grouplist)
         for group in grouplist:
-            print(type(group))
-            print('-'.join(map(str, group)))
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+        conn.close()
+
+    def updateGrouplist(self):
+        from openpyxl import load_workbook
+        wb = load_workbook(filename='files/1.xlsx', read_only=True)
+        ws = wb['Лист1']
+        for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
+            for cols in row:
+                if cols.value and re.match(r'\w*[-]\d\d[-]\d\d', str(cols.value)):
+                    print(cols.value)
+                    string = str(cols.value)
+                    print(string.split("-"))
+        dbconfig = read_db_config()
+        conn = MySQLConnection(**dbconfig)
+        cursor = conn.cursor()
+        #cursor.execute("SELECT name,code,year FROM groups")
+
         conn.close()
 
     def download(self):
@@ -71,6 +83,9 @@ class MyApp(QMainWindow):
             if links.get('href').find("IIT-2k-17_18-vesna.xlsx") != -1:
                 link = links.get('href')
                 print(link)
+
+        if not os.path.exists("files"):
+            os.makedirs("files")
         urllib.request.urlretrieve(link, "files/1.xlsx")
 
     def toTables(self):
