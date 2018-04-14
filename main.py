@@ -22,7 +22,6 @@ from datetime import datetime, timedelta
 def read_db_config(filename='config.ini', section='mysql'):
     parser = ConfigParser()
     parser.read(filename)
-
     db = {}
     if parser.has_section(section):
         items = parser.items(section)
@@ -30,7 +29,6 @@ def read_db_config(filename='config.ini', section='mysql'):
             db[item[0]] = item[1]
     else:
         raise Exception('{0} not found in the {1} file'.format(section, filename))
-
     return db
 
 
@@ -44,9 +42,10 @@ class MyApp(QMainWindow):
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse)
-        self.ui.updGlButton.clicked.connect(self.updateGrouplist)
-        self.ui.toTablesButton.clicked.connect(self.toTables)
+        self.ui.updGlButton.clicked.connect(self.update_group_list)
+        self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.pushButton.clicked.connect(self.Week)
+
         self.statusBar().addWidget(self.ui.progressBar)
         self.ui.progressBar.hide()
 
@@ -64,7 +63,7 @@ class MyApp(QMainWindow):
     def Week(self):
         print(0)
 
-    def updateGrouplist(self):
+    def update_group_list(self):
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
@@ -77,7 +76,7 @@ class MyApp(QMainWindow):
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
-        #cursor.execute("SELECT name,code,year FROM groups")
+        # cursor.execute("SELECT name,code,year FROM groups")
 
         conn.close()
 
@@ -95,7 +94,7 @@ class MyApp(QMainWindow):
             os.makedirs("files")
         urllib.request.urlretrieve(link, "files/1.xlsx")
 
-    def toTables(self):
+    def to_tables(self):
         self.ui.groupComboBox.clear()
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
@@ -128,11 +127,11 @@ class MyApp(QMainWindow):
         y = 0
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
-                print(cols.value)
-                if (cols.value == self.ui.groupComboBox.currentText()):
+                # print(cols.value)
+                if cols.value == self.ui.groupComboBox.currentText():
                     y = cols.row
                     x = cols.column
-                    print(x, y, "!!!!!!!!!!!!!!!!111111111111111111111111111111111")
+                    #print(x, y, "!!!!!!!!!!!!!!!!111111111111111111111111111111111")
                     break
 
         mir = 4
@@ -147,18 +146,27 @@ class MyApp(QMainWindow):
         pr = 1
 
         for row in ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac):
+            title = str(row[0].value)
+            subgr =0
             pr += 2
             self.ui.progressBar.setValue(pr)
             day = i // 12 + 1
-            if (number > 6):
+            if number > 6:
                 number = 1
-            if (i % 2 == 0):
+            if i % 2 == 0:
                 even = 0
             else:
                 even = 1
+            if "(1 подгр)" in title:
+                subgr = 1
+                title = title.replace('(1 подгр)', '')
+            if "(2 подгр)" in title:
+                subgr = 2
+                title = title.replace('(2 подгр)', '')
             try:
-                cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                    'NULL', gr, day, number, even, row[0].value, row[1].value, row[2].value, row[3].value))
+                cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                    None, gr, day, number, even, title, row[1].value, row[2].value, row[3].value,
+                    None, subgr, None))
                 conn.commit()
             except Error as error:
                 print(error)
