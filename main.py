@@ -19,7 +19,7 @@ import re
 from datetime import datetime, timedelta
 
 
-def read_db_config(filename='config.ini', section='mysql'):
+def read_db_config(filename='config.ini', section='mysql'):  # чтение логина бд
     parser = ConfigParser()
     parser.read(filename)
     db = {}
@@ -49,8 +49,9 @@ class MyApp(QMainWindow):
         self.statusBar().addWidget(self.ui.progressBar)
         self.ui.progressBar.hide()
 
-        self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
+        self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
+        #добавление в комбобокс всех групп из базы
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
@@ -63,7 +64,7 @@ class MyApp(QMainWindow):
     def Week(self):
         print(0)
 
-    def update_group_list(self):
+    def update_group_list(self):  #получение из файла названий всех групп и запись в бд
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
@@ -80,7 +81,7 @@ class MyApp(QMainWindow):
 
         conn.close()
 
-    def download(self):
+    def download(self):  #скачивание файла с сайта
         print("downloading...")
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
@@ -94,7 +95,7 @@ class MyApp(QMainWindow):
             os.makedirs("files")
         urllib.request.urlretrieve(link, "files/1.xlsx")
 
-    def to_tables(self):
+    def to_tables(self):  #отображение данных их бд в таблицах
         self.ui.groupComboBox.clear()
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
@@ -112,7 +113,7 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse(self):
+    def parse(self):  #получение из файла расписания выбранной группы и запись в бд
         print("parsing...")
         self.ui.progressBar.show()
         self.ui.progressBar.setValue(0)
@@ -127,11 +128,9 @@ class MyApp(QMainWindow):
         y = 0
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
-                # print(cols.value)
                 if cols.value == self.ui.groupComboBox.currentText():
                     y = cols.row
                     x = cols.column
-                    #print(x, y, "!!!!!!!!!!!!!!!!111111111111111111111111111111111")
                     break
 
         mir = 4
