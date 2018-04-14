@@ -16,6 +16,7 @@ from openpyxl.utils import get_column_letter
 from xlutils3.copy import copy
 from configparser import ConfigParser
 import re
+from datetime import datetime, timedelta
 
 
 def read_db_config(filename='config.ini', section='mysql'):
@@ -45,8 +46,11 @@ class MyApp(QMainWindow):
         self.ui.parseButton.clicked.connect(self.parse)
         self.ui.updGlButton.clicked.connect(self.updateGrouplist)
         self.ui.toTablesButton.clicked.connect(self.toTables)
+        self.ui.pushButton.clicked.connect(self.Week)
         self.statusBar().addWidget(self.ui.progressBar)
         self.ui.progressBar.hide()
+
+        self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
 
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
@@ -56,6 +60,9 @@ class MyApp(QMainWindow):
         for group in grouplist:
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
         conn.close()
+
+    def Week(self):
+        print(0)
 
     def updateGrouplist(self):
         from openpyxl import load_workbook
