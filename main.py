@@ -100,7 +100,7 @@ class MyApp(QMainWindow):
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
-        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=1 AND `group`='ИКБО-06-16'")
+        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`='ИКБО-06-16'")
         print("exec")
         lessons = cursor.fetchall()
         conn.close()
@@ -120,6 +120,10 @@ class MyApp(QMainWindow):
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
+
+        cursor.execute("TRUNCATE TABLE lessons")
+        conn.commit()
+
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
@@ -139,29 +143,32 @@ class MyApp(QMainWindow):
         mac = mic + 3
         gr = ws.cell(row=y, column=x).value
         print(gr)
-        i = 0
         number = 1
 
         pr = 1
 
-        for row in ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac):
+        for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
             title = str(row[0].value)
             subgr =0
             pr += 2
             self.ui.progressBar.setValue(pr)
-            day = i // 12 + 1
+            day = index // 12 + 1
             if number > 6:
                 number = 1
-            if i % 2 == 0:
+            if index % 2 == 0:
                 even = 0
             else:
                 even = 1
             if "(1 подгр)" in title:
+                print("до: ", title)
                 subgr = 1
                 title = title.replace('(1 подгр)', '')
+                print("после: ", title)
             if "(2 подгр)" in title:
+                print("до: ", title)
                 subgr = 2
                 title = title.replace('(2 подгр)', '')
+                print("после: ", title)
             try:
                 cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                     None, gr, day, number, even, title, row[1].value, row[2].value, row[3].value,
@@ -169,7 +176,6 @@ class MyApp(QMainWindow):
                 conn.commit()
             except Error as error:
                 print(error)
-            i += 1
             number += even
         self.ui.progressBar.setValue(100)
         conn.close()
