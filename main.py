@@ -104,11 +104,12 @@ class MyApp(QMainWindow):
         urllib.request.urlretrieve(link, "files/1.xlsx")
 
     def to_tables(self):  # отображение данных их бд в таблицах
-        self.ui.groupComboBox.clear()
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
-        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`='ИКБО-06-16'")
+        print(self.ui.groupComboBox.currentText())
+        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`=%s",
+                       (self.ui.groupComboBox.currentText(),))
         print("exec")
         lessons = cursor.fetchall()
         conn.close()
