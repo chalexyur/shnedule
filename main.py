@@ -19,7 +19,7 @@ import re
 from datetime import datetime, timedelta
 
 
-def read_db_config(filename='config.ini', section='mysql'):  # чтение логина бд
+def read_db_config(filename='config.ini', section='local-mysql'):  # чтение логина бд
     parser = ConfigParser()
     parser.read(filename)
     db = {}
@@ -51,7 +51,7 @@ class MyApp(QMainWindow):
 
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
-        #добавление в комбобокс всех групп из базы
+        # добавление в комбобокс всех групп из базы
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
@@ -64,7 +64,10 @@ class MyApp(QMainWindow):
     def Week(self):
         print(0)
 
-    def update_group_list(self):  #получение из файла названий всех групп и запись в бд
+    def update_group_list(self):  # получение из файла названий всех групп и запись в бд
+        dbconfig = read_db_config()
+        conn = MySQLConnection(**dbconfig)
+        cursor = conn.cursor()
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
@@ -73,15 +76,20 @@ class MyApp(QMainWindow):
                 if cols.value and re.match(r'\w*[-]\d\d[-]\d\d', str(cols.value)):
                     print(cols.value)
                     string = str(cols.value)
+                    group = string.split("-")
                     print(string.split("-"))
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
-        # cursor.execute("SELECT name,code,year FROM groups")
+                    cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                                   (None, group[0], group[1], int(group[2]), None, None, None))
+                    conn.commit()
+
+        cursor.execute("SELECT name,code,year FROM groups")
+        grouplist = cursor.fetchall()
+        for group in grouplist:
+            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
 
         conn.close()
 
-    def download(self):  #скачивание файла с сайта
+    def download(self):  # скачивание файла с сайта
         print("downloading...")
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
@@ -95,7 +103,7 @@ class MyApp(QMainWindow):
             os.makedirs("files")
         urllib.request.urlretrieve(link, "files/1.xlsx")
 
-    def to_tables(self):  #отображение данных их бд в таблицах
+    def to_tables(self):  # отображение данных их бд в таблицах
         self.ui.groupComboBox.clear()
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
@@ -113,7 +121,7 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse(self):  #получение из файла расписания выбранной группы и запись в бд
+    def parse(self):  # получение из файла расписания выбранной группы и запись в бд
         print("parsing...")
         self.ui.progressBar.show()
         self.ui.progressBar.setValue(0)
@@ -149,7 +157,7 @@ class MyApp(QMainWindow):
 
         for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
             title = str(row[0].value)
-            subgr =0
+            subgr = 0
             pr += 2
             self.ui.progressBar.setValue(pr)
             day = index // 12 + 1
@@ -178,6 +186,7 @@ class MyApp(QMainWindow):
                 print(error)
             number += even
         self.ui.progressBar.setValue(100)
+        self.ui.progressBar.hide()
         conn.close()
 
 
