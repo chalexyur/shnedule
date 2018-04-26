@@ -7,13 +7,13 @@ from mysql.connector import MySQLConnection, Error
 from bs4 import BeautifulSoup
 import urllib.request
 import os
-import xlrd
-import xlwt
+#import xlrd
+#import xlwt
 import openpyxl
 from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-from xlutils3.copy import copy
+#from xlutils3.copy import copy
 from configparser import ConfigParser
 import re
 from datetime import datetime, timedelta
