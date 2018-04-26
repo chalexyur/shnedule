@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """create table files
 (
   id          int auto_increment
@@ -124,7 +126,7 @@ class MyApp(QMainWindow):
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
         from openpyxl import load_workbook
-        wb = load_workbook(filename='files/1.xlsx', read_only=True)
+        wb = load_workbook(filename='files/iit/IIT-2k-17_18-vesna.xlsx', read_only=True)
         ws = wb['Лист1']
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
@@ -156,7 +158,9 @@ class MyApp(QMainWindow):
 
         if not os.path.exists("files"):
             os.makedirs("files")
-        urllib.request.urlretrieve(link, "files/1.xlsx")
+        if not os.path.exists("files/iit"):
+            os.makedirs("files/iit")
+        urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")
 
     def to_tables(self):  # отображение данных их бд в таблицах
         dbconfig = read_db_config()
