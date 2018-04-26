@@ -1,3 +1,58 @@
+"""create table files
+(
+  id          int auto_increment
+    primary key,
+  institute   varchar(50) null,
+  prog        varchar(50) null,
+  course      int         null,
+  ses         varchar(50) null,
+  last_update datetime    null,
+  past_size   int         null,
+  filename    varchar(50) null
+)
+  engine = InnoDB;
+
+  create table groups
+(
+  id          int auto_increment
+    primary key,
+  name        varchar(10) null,
+  code        varchar(2)  null,
+  year        int         null,
+  quantity    int         null,
+  institute   varchar(50) null,
+  last_update datetime    null,
+  file_id     int         null,
+  constraint groups_ibfk_1
+  foreign key (file_id) references files (id)
+)
+  engine = InnoDB;
+
+create index file_id
+  on groups (file_id);
+
+
+
+  create table lessons
+(
+  id       int auto_increment
+    primary key,
+  `group`  varchar(10)  null,
+  day      int(1)       null,
+  number   int(1)       null,
+  even     tinyint(1)   null,
+  title    varchar(100) null,
+  type     varchar(20)  null,
+  teacher  varchar(50)  null,
+  room     varchar(10)  null,
+  weeks    varchar(50)  null,
+  subgroup int(1)       null,
+  campus   varchar(50)  null
+)
+  engine = InnoDB;
+
+
+  """
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidget, QTableWidgetItem
 from PyQt5 import uic
@@ -7,13 +62,13 @@ from mysql.connector import MySQLConnection, Error
 from bs4 import BeautifulSoup
 import urllib.request
 import os
-#import xlrd
-#import xlwt
+# import xlrd
+# import xlwt
 import openpyxl
 from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-#from xlutils3.copy import copy
+# from xlutils3.copy import copy
 from configparser import ConfigParser
 import re
 from datetime import datetime, timedelta
