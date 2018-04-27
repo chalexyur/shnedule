@@ -106,6 +106,9 @@ class MyApp(QMainWindow):
         self.statusBar().addWidget(self.ui.progressBar)
         self.ui.progressBar.hide()
 
+        self.movie = QMovie("ani1.gif")
+        self.ui.processLabel.setMovie(self.movie)
+
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
         # добавление в комбобокс всех групп из базы
@@ -139,9 +142,9 @@ class MyApp(QMainWindow):
                     string = str(cols.value)
                     group = string.split("-")
                     print(string.split("-"))
-                    # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                    #               (None, group[0], group[1], int(group[2]), None, None, None))
-                    cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
+                    cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
+                                   (None, group[0], group[1], int(group[2]), None, None, None, None))
+                    # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
                     conn.commit()
 
         cursor.execute("SELECT name,code,year FROM groups")
@@ -153,6 +156,7 @@ class MyApp(QMainWindow):
 
     def download(self):  # скачивание файла с сайта
         print("downloading...")
+        self.movie.start()
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
 
