@@ -123,6 +123,10 @@ class MyApp(QMainWindow):
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
+
+        cursor.execute("TRUNCATE TABLE groups")
+        conn.commit()
+
         from openpyxl import load_workbook
         wb = load_workbook(filename='files/1.xlsx', read_only=True)
         ws = wb['Лист1']
@@ -133,8 +137,9 @@ class MyApp(QMainWindow):
                     string = str(cols.value)
                     group = string.split("-")
                     print(string.split("-"))
-                    cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                                   (None, group[0], group[1], int(group[2]), None, None, None))
+                    # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    #               (None, group[0], group[1], int(group[2]), None, None, None))
+                    cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
                     conn.commit()
 
         cursor.execute("SELECT name,code,year FROM groups")
