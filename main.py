@@ -103,12 +103,6 @@ class MyApp(QMainWindow):
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.pushButton.clicked.connect(self.Week)
 
-        self.statusBar().addWidget(self.ui.progressBar)
-        self.ui.progressBar.hide()
-
-        self.movie = QMovie("ani1.gif")
-        self.ui.processLabel.setMovie(self.movie)
-
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
         # добавление в комбобокс всех групп из базы
@@ -125,6 +119,7 @@ class MyApp(QMainWindow):
         print(0)
 
     def update_group_list(self):  # получение из файла названий всех групп и запись в бд
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
@@ -153,13 +148,12 @@ class MyApp(QMainWindow):
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
 
         conn.close()
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):  # скачивание файла с сайта
-        print("downloading...")
-        self.movie.start()
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
-
         for links in soup.find_all('a'):
             if links.get('href').find("IIT-2k-17_18-vesna.xlsx") != -1:
                 link = links.get('href')
@@ -170,6 +164,7 @@ class MyApp(QMainWindow):
         if not os.path.exists("files/iit"):
             os.makedirs("files/iit")
         urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):  # отображение данных их бд в таблицах
         dbconfig = read_db_config()
@@ -191,9 +186,7 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
     def parse(self):  # получение из файла расписания выбранной группы и запись в бд
-        print("parsing...")
-        self.ui.progressBar.show()
-        self.ui.progressBar.setValue(0)
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
@@ -202,7 +195,7 @@ class MyApp(QMainWindow):
         conn.commit()
 
         from openpyxl import load_workbook
-        wb = load_workbook(filename='files/1.xlsx', read_only=True)
+        wb = load_workbook(filename='files/iit/IIT-2k-17_18-vesna.xlsx', read_only=True)
         ws = wb['Лист1']
 
         x = 0
@@ -221,14 +214,9 @@ class MyApp(QMainWindow):
         gr = ws.cell(row=y, column=x).value
         print(gr)
         number = 1
-
-        pr = 1
-
         for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
             title = str(row[0].value)
             subgr = 0
-            pr += 2
-            self.ui.progressBar.setValue(pr)
             day = index // 12 + 1
             if number > 6:
                 number = 1
@@ -254,9 +242,8 @@ class MyApp(QMainWindow):
             except Error as error:
                 print(error)
             number += even
-        self.ui.progressBar.setValue(100)
-        self.ui.progressBar.hide()
         conn.close()
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
 
 if __name__ == "__main__":
