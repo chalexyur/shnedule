@@ -64,13 +64,10 @@ from mysql.connector import MySQLConnection, Error
 from bs4 import BeautifulSoup
 import urllib.request
 import os
-# import xlrd
-# import xlwt
 import openpyxl
 from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-# from xlutils3.copy import copy
 from configparser import ConfigParser
 import re
 from datetime import datetime, timedelta
@@ -101,7 +98,7 @@ class MyApp(QMainWindow):
         self.ui.parseButton.clicked.connect(self.parse)
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
-        self.ui.pushButton.clicked.connect(self.Week)
+        self.ui.titleButton.clicked.connect(self.titles)
 
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
@@ -115,8 +112,17 @@ class MyApp(QMainWindow):
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
         conn.close()
 
-    def Week(self):
-        print(0)
+    def titles(self):
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
+        for i in range(0, 89):
+            fname = "files/all/" + str(i) + ".xlsx"
+            print(fname)
+            wb = load_workbook(filename=fname, read_only=True)
+            print(wb.get_sheet_names)
+            # ws = wb['Лист1']
+            # print(ws.cell(row=1, column=2).value)
+
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def update_group_list(self):  # получение из файла названий всех групп и запись в бд
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -154,16 +160,20 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
+        i = 0;
         for links in soup.find_all('a'):
-            if links.get('href').find("IIT-2k-17_18-vesna.xlsx") != -1:
+            if links.get('href').find(".xlsx") != -1:
                 link = links.get('href')
                 print(link)
-
+                print(i)
+                urllib.request.urlretrieve(link, "files/all/" + str(i) + ".xlsx")
+                i += 1
+        """
         if not os.path.exists("files"):
             os.makedirs("files")
         if not os.path.exists("files/iit"):
             os.makedirs("files/iit")
-        urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")
+        urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")"""
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):  # отображение данных их бд в таблицах
