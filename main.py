@@ -63,7 +63,7 @@ from PyQt5.QtGui import *
 from mysql.connector import MySQLConnection, Error
 from bs4 import BeautifulSoup
 import urllib.request
-import os
+import os, os.path
 import openpyxl
 from openpyxl import load_workbook
 from openpyxl.compat import range
@@ -114,13 +114,21 @@ class MyApp(QMainWindow):
 
     def titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        for i in range(0, 89):
-            fname = "files/all/" + str(i) + ".xlsx"
-            print(fname)
-            wb = load_workbook(filename=fname, read_only=True)
-            print(wb.get_sheet_names)
-            # ws = wb['Лист1']
-            # print(ws.cell(row=1, column=2).value)
+        folder = "files/all/"
+        qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
+        print(qfiles)
+        for i in range(0, qfiles):
+            fpath = folder + str(i) + ".xlsx"
+            print(fpath)
+            wb = load_workbook(filename=fpath, read_only=True)
+            for index, sheet in enumerate(wb.sheetnames):
+                ws = wb[sheet]
+                if ws.cell(row=1, column=1).value:
+                    print(ws.cell(row=1, column=1).value)
+                elif ws.cell(row=1, column=2).value:
+                    print(ws.cell(row=1, column=2).value)
+                elif ws.cell(row=1, column=3).value:
+                    print(ws.cell(row=1, column=3).value)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
@@ -160,7 +168,7 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
-        i = 0;
+        i = 0
         for links in soup.find_all('a'):
             if links.get('href').find(".xlsx") != -1:
                 link = links.get('href')
