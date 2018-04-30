@@ -32,6 +32,35 @@ def read_db_config(filename='config.ini', section='local-mysql'):  # чтени�
     return db
 
 
+def parse_groups(self, fname="files/all/0.xlsx", sheet=0):
+    dbconfig = read_db_config()
+    conn = MySQLConnection(**dbconfig)
+    cursor = conn.cursor()
+
+    cursor.execute("TRUNCATE TABLE groups")
+    conn.commit()
+
+    from openpyxl import load_workbook
+    wb = load_workbook(filename=fname, read_only=True)
+    print(wb.sheetnames)
+    ws = wb[wb.sheetnames[sheet]]
+    for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
+        for cols in row:
+            string = str(cols.value)
+            match = re.search(r'\w*[-]\d\d[-]\d\d', string)
+            if match:
+                print(string)
+                string = match[0]
+                print(string)
+                group = string.split("-")
+                print(string.split("-"))
+                cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
+                               (None, group[0], group[1], int(group[2]), None, None, None, None))
+                # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
+                conn.commit()
+    conn.close()
+
+
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
 
@@ -42,7 +71,7 @@ class MyApp(QMainWindow):
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse)
-        self.ui.updGlButton.clicked.connect(self.update_group_list("files/all/0.xlsx"))
+        self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.titles)
 
@@ -77,36 +106,9 @@ class MyApp(QMainWindow):
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
-    def update_group_list(self, fname="files/all/0.xlsx"):  # получение из файла названий всех групп и запись в бд
+    def update_group_list(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
-
-        cursor.execute("TRUNCATE TABLE groups")
-        conn.commit()
-
-        from openpyxl import load_workbook
-        wb = load_workbook(filename=fname, read_only=True)
-        ws = wb['Лист1']
-        for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
-            for cols in row:
-                if cols.value and re.match(r'\w*[-]\d\d[-]\d\d', str(cols.value)):
-                    print(cols.value)
-                    string = str(cols.value)
-                    group = string.split("-")
-                    print(string.split("-"))
-                    cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
-                                   (None, group[0], group[1], int(group[2]), None, None, None, None))
-                    # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
-                    conn.commit()
-
-        cursor.execute("SELECT name,code,year FROM groups")
-        grouplist = cursor.fetchall()
-        for group in grouplist:
-            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
-
-        conn.close()
+        parse_groups(self, fname="files/all/0.xlsx", sheet=0)
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):  # скачивание файла с сайта

@@ -140,82 +140,6 @@
                     </property>
                 </column>
             </widget>
-            <widget class="QWidget" name="layoutWidget">
-                <property name="geometry">
-                    <rect>
-                        <x>460</x>
-                        <y>60</y>
-                        <width>392</width>
-                        <height>112</height>
-                    </rect>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_2">
-                    <item row="0" column="0" colspan="2">
-                        <widget class="QPushButton" name="dwnldButton">
-                            <property name="text">
-                                <string>Скачать файлы</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="1" column="0" colspan="2">
-                        <widget class="QPushButton" name="updGlButton">
-                            <property name="text">
-                                <string>Обновит список групп</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="2" column="0">
-                        <widget class="QLabel" name="label_3">
-                            <property name="text">
-                                <string>Группа:</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="2" column="1">
-                        <widget class="QComboBox" name="groupComboBox">
-                            <property name="sizePolicy">
-                                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="baseSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="2" column="2">
-                        <widget class="QPushButton" name="parseButton">
-                            <property name="text">
-                                <string>Спарсить расписание для выбранной группы</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="3" column="0" colspan="2">
-                        <widget class="QPushButton" name="toTablesButton">
-                            <property name="text">
-                                <string>В таблицы</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="2">
-                        <widget class="QPushButton" name="titleButton">
-                            <property name="text">
-                                <string>Определить заголовки файлов</string>
-                            </property>
-                        </widget>
-                    </item>
-                </layout>
-            </widget>
             <widget class="QLabel" name="filesLabel">
                 <property name="geometry">
                     <rect>
@@ -290,6 +214,118 @@
                 <property name="text">
                     <string>Текущая неделя:</string>
                 </property>
+            </widget>
+            <widget class="QPushButton" name="dwnldButton">
+                <property name="geometry">
+                    <rect>
+                        <x>461</x>
+                        <y>61</y>
+                        <width>151</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Скачать файлы</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="updGlButton">
+                <property name="geometry">
+                    <rect>
+                        <x>461</x>
+                        <y>90</y>
+                        <width>151</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Спарсить группы</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="parseButton">
+                <property name="geometry">
+                    <rect>
+                        <x>613</x>
+                        <y>119</y>
+                        <width>238</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Спарсить расписание для выбранной группы</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="toTablesButton">
+                <property name="geometry">
+                    <rect>
+                        <x>461</x>
+                        <y>148</y>
+                        <width>75</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>В таблицы</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="titleButton">
+                <property name="geometry">
+                    <rect>
+                        <x>630</x>
+                        <y>60</y>
+                        <width>167</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Определить заголовки файлов</string>
+                </property>
+            </widget>
+            <widget class="QWidget" name="">
+                <property name="geometry">
+                    <rect>
+                        <x>461</x>
+                        <y>119</y>
+                        <width>148</width>
+                        <height>23</height>
+                    </rect>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                    <item row="0" column="0">
+                        <widget class="QLabel" name="grLabel">
+                            <property name="text">
+                                <string>Группа:</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QComboBox" name="groupComboBox">
+                            <property name="sizePolicy">
+                                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>100</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="baseSize">
+                                <size>
+                                    <width>100</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="font">
+                                <font>
+                                    <family>Consolas</family>
+                                    <pointsize>10</pointsize>
+                                </font>
+                            </property>
+                        </widget>
+                    </item>
+                </layout>
             </widget>
             <zorder>layoutWidget</zorder>
             <zorder>layoutWidget</zorder>
