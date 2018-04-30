@@ -1,22 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from configparser import ConfigParser
-from mysql.connector import MySQLConnection, Error
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidget, QTableWidgetItem
-from PyQt5 import uic
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import *
-from bs4 import BeautifulSoup
-import urllib.request
+import os
+import os.path
+import re
 import sys
-import os, os.path
-import openpyxl
+import urllib.request
+from configparser import ConfigParser
+from datetime import datetime
+
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
+from bs4 import BeautifulSoup
+from mysql.connector import MySQLConnection, Error
 from openpyxl import load_workbook
 from openpyxl.compat import range
-from openpyxl.utils import get_column_letter
-import re
-from datetime import datetime, timedelta
 
 
 def read_db_config(filename='config.ini', section='local-mysql'):  # чтение логина бд
@@ -32,13 +32,16 @@ def read_db_config(filename='config.ini', section='local-mysql'):  # чтени�
     return db
 
 
-def parse_groups(self, fp, sn):
-    dbconfig = read_db_config()
-    conn = MySQLConnection(**dbconfig)
-    cursor = conn.cursor()
+dbconfig = read_db_config()
+conn = MySQLConnection(**dbconfig)
+print(conn.is_connected())
+cursor = conn.cursor()
 
-    wb = load_workbook(filename=fp, read_only=True)
-    ws = wb[sn]
+
+def parse_groups(self, worksheet):
+    # wb = load_workbook(filename=fp, read_only=True)
+    # ws = wb[sn]
+    ws = worksheet
     for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
         for cols in row:
             string = str(cols.value)
@@ -49,14 +52,16 @@ def parse_groups(self, fp, sn):
                 print(string)
                 group = string.split("-")
                 print(string.split("-"))
-                cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
-                               (None, group[0], group[1], int(group[2]), None, None, None, None))
+                # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
+                # (None, group[0], group[1], int(group[2]), None, None, None, None))
+                # cursor.execute("INSERT INTO groups(name,code,year) VALUES (%s, %s, %s)",
+                # (group[0], group[1], group[2]))
+                # (group[0], group[1], group[2]))
+                # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
                 # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
                 conn.commit()
-    conn.close()
 
-
-Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
+            Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
 
 class MyApp(QMainWindow):
@@ -69,18 +74,15 @@ class MyApp(QMainWindow):
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.titles)
+        # self.close().connect(self.exit())
 
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
         # добавление в комбобокс всех групп из базы
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
         cursor.execute("SELECT DISTINCT name,code,year FROM groups")
         grouplist = cursor.fetchall()
         for group in grouplist:
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
-        conn.close()
 
     def titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -99,22 +101,18 @@ class MyApp(QMainWindow):
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
-                            parse_groups(self, fp=fpath, sn=sheet)
+                            parse_groups(self, ws)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def update_group_list(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         # parse_groups(self, fname="files/all/0.xlsx", sheet=0)
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
         cursor.execute("SELECT DISTINCT name,code,year FROM groups")
         grouplist = cursor.fetchall()
         self.ui.groupComboBox.clear()
         for group in grouplist:
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
-        conn.close()
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):  # скачивание файла с сайта
@@ -138,15 +136,11 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):  # отображение данных их бд в таблицах
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
         print(self.ui.groupComboBox.currentText())
         cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`=%s",
                        (self.ui.groupComboBox.currentText(),))
         print("exec")
         lessons = cursor.fetchall()
-        conn.close()
 
         for i in range(6):
             for j in range(4):
@@ -158,9 +152,6 @@ class MyApp(QMainWindow):
 
     def parse(self):  # получение из файла расписания выбранной группы и запись в бд
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
 
         cursor.execute("TRUNCATE TABLE lessons")
         conn.commit()
@@ -213,8 +204,12 @@ class MyApp(QMainWindow):
             except Error as error:
                 print(error)
             number += even
-        conn.close()
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+
+    def closeEvent(self, event):
+        conn.close()
+        print(conn.is_connected())
+        event.accept()
 
 
 if __name__ == "__main__":
