@@ -36,6 +36,51 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
+cursor.execute("""
+create table IF NOT EXISTS groups
+(
+  id          int auto_increment
+    primary key,
+  group_name  varchar(50) null,
+  quantity    int         null,
+  institute   varchar(50) null,
+  last_update datetime    null,
+  path_id     int         null,
+  constraint groups_group_name_uindex
+  unique (group_name)
+);""")
+cursor.execute("""
+create table IF NOT EXISTS lessons
+(
+	id int auto_increment
+		primary key,
+	`group` varchar(10) null,
+	day int(1) null,
+	number int(1) null,
+	even tinyint(1) null,
+	title varchar(100) null,
+	type varchar(20) null,
+	teacher varchar(50) null,
+	room varchar(10) null,
+	weeks varchar(50) null,
+	subgroup int(1) null,
+	campus varchar(50) null
+);""")
+cursor.execute("""
+create table IF NOT EXISTS paths
+(
+  id          int auto_increment
+    primary key,
+  institute   varchar(50) null,
+  prog        varchar(50) null,
+  course      int         null,
+  ses         varchar(50) null,
+  last_update datetime    null,
+  past_size   int         null,
+  filename    varchar(50) null,
+  sheet       varchar(50) null
+);""")
+conn.commit()
 
 
 def parse_groups(self, worksheet):
@@ -50,18 +95,22 @@ def parse_groups(self, worksheet):
                 print(string)
                 string = match[0]
                 print(string)
-                group = string.split("-")
-                print(string.split("-"))
-                # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
-                # (None, group[0], group[1], int(group[2]), None, None, None, None))
-                # cursor.execute("INSERT INTO groups(name,code,year) VALUES (%s, %s, %s)",
-                # (group[0], group[1], group[2]))
-                # (group[0], group[1], group[2]))
-                # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
-                # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
-                conn.commit()
+                try:
+                    # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
+                    # (None, group[0], group[1], int(group[2]), None, None, None, None))
 
-            Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
+                    cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s, %s)",
+                                   (None, string, None, None, None, None))
+                    # (group[0], group[1], group[2]))
+                    # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
+                    # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
+
+                except Error as error:
+                    print(error)
+    conn.commit()
+
+
+Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
 
 class MyApp(QMainWindow):
@@ -79,10 +128,10 @@ class MyApp(QMainWindow):
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
 
         # добавление в комбобокс всех групп из базы
-        cursor.execute("SELECT DISTINCT name,code,year FROM groups")
+        cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
         for group in grouplist:
-            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+            self.ui.groupComboBox.addItem(group)
 
     def titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -108,11 +157,10 @@ class MyApp(QMainWindow):
     def update_group_list(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         # parse_groups(self, fname="files/all/0.xlsx", sheet=0)
-        cursor.execute("SELECT DISTINCT name,code,year FROM groups")
+        cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
-        self.ui.groupComboBox.clear()
         for group in grouplist:
-            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+            self.ui.groupComboBox.addItem(group)
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):  # скачивание файла с сайта
