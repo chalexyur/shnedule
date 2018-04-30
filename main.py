@@ -1,60 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""create table files
-(
-  id          int auto_increment
-    primary key,
-  institute   varchar(50) null,
-  prog        varchar(50) null,
-  course      int         null,
-  ses         varchar(50) null,
-  last_update datetime    null,
-  past_size   int         null,
-  filename    varchar(50) null
-)
-  engine = InnoDB;
 
-  create table groups
-(
-  id          int auto_increment
-    primary key,
-  name        varchar(10) null,
-  code        varchar(2)  null,
-  year        int         null,
-  quantity    int         null,
-  institute   varchar(50) null,
-  last_update datetime    null,
-  file_id     int         null,
-  constraint groups_ibfk_1
-  foreign key (file_id) references files (id)
-)
-  engine = InnoDB;
-
-create index file_id
-  on groups (file_id);
-
-
-
-  create table lessons
-(
-  id       int auto_increment
-    primary key,
-  `group`  varchar(10)  null,
-  day      int(1)       null,
-  number   int(1)       null,
-  even     tinyint(1)   null,
-  title    varchar(100) null,
-  type     varchar(20)  null,
-  teacher  varchar(50)  null,
-  room     varchar(10)  null,
-  weeks    varchar(50)  null,
-  subgroup int(1)       null,
-  campus   varchar(50)  null
-)
-  engine = InnoDB;
-
-
-  """
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidget, QTableWidgetItem
 from PyQt5 import uic
@@ -123,12 +69,11 @@ class MyApp(QMainWindow):
             wb = load_workbook(filename=fpath, read_only=True)
             for index, sheet in enumerate(wb.sheetnames):
                 ws = wb[sheet]
-                if ws.cell(row=1, column=1).value:
-                    print(ws.cell(row=1, column=1).value)
-                elif ws.cell(row=1, column=2).value:
-                    print(ws.cell(row=1, column=2).value)
-                elif ws.cell(row=1, column=3).value:
-                    print(ws.cell(row=1, column=3).value)
+                for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=4):
+                    for cols in row:
+                        value = str(cols.value)
+                        if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
+                            print(value)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
