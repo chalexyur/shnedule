@@ -39,50 +39,54 @@ conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
 try:
+
     cursor.execute("""
-    create table IF NOT EXISTS groups
+    create table IF NOT EXISTS lessons
     (
-      id          int auto_increment
+          id       int auto_increment
+    primary key,
+  `group`  varchar(10)  null,
+  day      int(1)       null,
+  number   int(1)       null,
+  even     tinyint(1)   null,
+  title    varchar(100) null,
+  type     varchar(20)  null,
+  teacher  varchar(50)  null,
+  room     varchar(10)  null,
+  weeks    varchar(50)  null,
+  subgroup int(1)       null,
+  campus   varchar(50)  null
+);""")
+    cursor.execute("""
+    create table IF NOT EXISTS paths
+    (
+       id          int auto_increment
+    primary key,
+  institute   varchar(50) null,
+  prog        varchar(50) null,
+  course      int         null,
+  ses         varchar(50) null,
+  last_update datetime    null,
+  past_size   int         null,
+  filename    varchar(50) null,
+  sheet       varchar(50) null
+);""")
+    cursor.execute("""
+        create table IF NOT EXISTS groups
+        (
+          id          int auto_increment
         primary key,
-      group_name  varchar(50) null,
+      group_name  varchar(50) not null,
       quantity    int         null,
       institute   varchar(50) null,
       last_update datetime    null,
       path_id     int         null,
       constraint groups_group_name_uindex
-      unique (group_name)
+      unique (group_name),
+      constraint groups_ibfk_1
+      foreign key (path_id) references paths (id)
     );""")
-    cursor.execute("""
-    create table IF NOT EXISTS lessons
-    (
-        id int auto_increment
-            primary key,
-        `group` varchar(10) null,
-        day int(1) null,
-        number int(1) null,
-        even tinyint(1) null,
-        title varchar(100) null,
-        type varchar(20) null,
-        teacher varchar(50) null,
-        room varchar(10) null,
-        weeks varchar(50) null,
-        subgroup int(1) null,
-        campus varchar(50) null
-    );""")
-    cursor.execute("""
-    create table IF NOT EXISTS paths
-    (
-      id          int auto_increment
-        primary key,
-      institute   varchar(50) null,
-      prog        varchar(50) null,
-      course      int         null,
-      ses         varchar(50) null,
-      last_update datetime    null,
-      past_size   int         null,
-      filename    varchar(50) null,
-      sheet       varchar(50) null
-    );""")
+    cursor.execute("create index path_id on groups (path_id)")
     conn.commit()
 except Error as error:
     print(error)
