@@ -19,7 +19,9 @@ from openpyxl import load_workbook
 from openpyxl.compat import range
 
 
-def read_db_config(filename='config.ini', section='local-mysql'):  # чтение логина бд
+def read_db_config():
+    filename = 'config.ini'
+    section = 'local-mysql'
     parser = ConfigParser()
     parser.read(filename)
     db = {}
@@ -36,56 +38,57 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
-cursor.execute("""
-create table IF NOT EXISTS groups
-(
-  id          int auto_increment
-    primary key,
-  group_name  varchar(50) null,
-  quantity    int         null,
-  institute   varchar(50) null,
-  last_update datetime    null,
-  path_id     int         null,
-  constraint groups_group_name_uindex
-  unique (group_name)
-);""")
-cursor.execute("""
-create table IF NOT EXISTS lessons
-(
-	id int auto_increment
-		primary key,
-	`group` varchar(10) null,
-	day int(1) null,
-	number int(1) null,
-	even tinyint(1) null,
-	title varchar(100) null,
-	type varchar(20) null,
-	teacher varchar(50) null,
-	room varchar(10) null,
-	weeks varchar(50) null,
-	subgroup int(1) null,
-	campus varchar(50) null
-);""")
-cursor.execute("""
-create table IF NOT EXISTS paths
-(
-  id          int auto_increment
-    primary key,
-  institute   varchar(50) null,
-  prog        varchar(50) null,
-  course      int         null,
-  ses         varchar(50) null,
-  last_update datetime    null,
-  past_size   int         null,
-  filename    varchar(50) null,
-  sheet       varchar(50) null
-);""")
-conn.commit()
+try:
+    cursor.execute("""
+    create table IF NOT EXISTS groups
+    (
+      id          int auto_increment
+        primary key,
+      group_name  varchar(50) null,
+      quantity    int         null,
+      institute   varchar(50) null,
+      last_update datetime    null,
+      path_id     int         null,
+      constraint groups_group_name_uindex
+      unique (group_name)
+    );""")
+    cursor.execute("""
+    create table IF NOT EXISTS lessons
+    (
+        id int auto_increment
+            primary key,
+        `group` varchar(10) null,
+        day int(1) null,
+        number int(1) null,
+        even tinyint(1) null,
+        title varchar(100) null,
+        type varchar(20) null,
+        teacher varchar(50) null,
+        room varchar(10) null,
+        weeks varchar(50) null,
+        subgroup int(1) null,
+        campus varchar(50) null
+    );""")
+    cursor.execute("""
+    create table IF NOT EXISTS paths
+    (
+      id          int auto_increment
+        primary key,
+      institute   varchar(50) null,
+      prog        varchar(50) null,
+      course      int         null,
+      ses         varchar(50) null,
+      last_update datetime    null,
+      past_size   int         null,
+      filename    varchar(50) null,
+      sheet       varchar(50) null
+    );""")
+    conn.commit()
+except Error as error:
+    print(error)
 
 
-def parse_groups(self, worksheet):
-    # wb = load_workbook(filename=fp, read_only=True)
-    # ws = wb[sn]
+def parse_groups(worksheet, path_id):
     ws = worksheet
     for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
         for cols in row:
@@ -100,7 +103,7 @@ def parse_groups(self, worksheet):
                     # (None, group[0], group[1], int(group[2]), None, None, None, None))
 
                     cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s, %s)",
-                                   (None, string, None, None, None, None))
+                                   (None, string, None, None, None, path_id))
                     # (group[0], group[1], group[2]))
                     # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
                     # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
@@ -123,22 +126,23 @@ class MyApp(QMainWindow):
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.titles)
-        # self.close().connect(self.exit())
+        self.ui.tleButton.clicked.connect(self.tle)
+        self.ui.tgrButton.clicked.connect(self.tgr)
+        self.ui.tpaButton.clicked.connect(self.tpa)
 
-        self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))  # вычисление номера текущей УЧЕБНОЙ недели
+        self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
 
-        # добавление в комбобокс всех групп из базы
         cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
         for group in grouplist:
-            self.ui.groupComboBox.addItem(group)
+            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
 
     def titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, qfiles):
+        for i in range(0, 5):
             fpath = folder + str(i) + ".xlsx"
             print(fpath)
             wb = load_workbook(filename=fpath, read_only=True)
@@ -150,20 +154,27 @@ class MyApp(QMainWindow):
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
-                            parse_groups(self, ws)
+
+                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s)",
+                                           (None, None, None, None, None, datetime.now(), None, fpath, None))
+                            conn.commit()
+                            cursor.execute("SELECT LAST_INSERT_ID()")
+                            path_id = cursor.fetchone()[0]
+                            print(path_id)
+                            parse_groups(ws, path_id)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def update_group_list(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        # parse_groups(self, fname="files/all/0.xlsx", sheet=0)
         cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
+        self.ui.groupComboBox.clear()
         for group in grouplist:
-            self.ui.groupComboBox.addItem(group)
+            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
-    def download(self):  # скачивание файла с сайта
+    def download(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
@@ -183,7 +194,7 @@ class MyApp(QMainWindow):
         urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")"""
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
-    def to_tables(self):  # отображение данных их бд в таблицах
+    def to_tables(self):
         print(self.ui.groupComboBox.currentText())
         cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`=%s",
                        (self.ui.groupComboBox.currentText(),))
@@ -198,14 +209,10 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse(self):  # получение из файла расписания выбранной группы и запись в бд
+    def parse(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-
-        cursor.execute("TRUNCATE TABLE lessons")
-        conn.commit()
-
         from openpyxl import load_workbook
-        wb = load_workbook(filename='files/iit/IIT-2k-17_18-vesna.xlsx', read_only=True)
+        wb = load_workbook(filename='files/all/0.xlsx', read_only=True)
         ws = wb['Лист1']
 
         x = 0
@@ -253,6 +260,27 @@ class MyApp(QMainWindow):
                 print(error)
             number += even
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+
+    def tle(self):
+        try:
+            cursor.execute("DELETE FROM paths;")
+            conn.commit()
+        except Error as error:
+            print(error)
+
+    def tgr(self):
+        try:
+            cursor.execute("DELETE FROM paths;")
+            conn.commit()
+        except Error as error:
+            print(error)
+
+    def tpa(self):
+        try:
+            cursor.execute("DELETE FROM paths;")
+            conn.commit()
+        except Error as error:
+            print(error)
 
     def closeEvent(self, event):
         conn.close()
