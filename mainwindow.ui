@@ -140,35 +140,19 @@
                     </property>
                 </column>
             </widget>
-            <widget class="QLabel" name="filesLabel">
-                <property name="geometry">
-                    <rect>
-                        <x>300</x>
-                        <y>0</y>
-                        <width>151</width>
-                        <height>16</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>На сайте: 90 xlsx и 20 pdf</string>
-                </property>
-            </widget>
             <widget class="QComboBox" name="comboBox">
                 <property name="geometry">
                     <rect>
                         <x>180</x>
                         <y>0</y>
-                        <width>106</width>
-                        <height>20</height>
+                        <width>151</width>
+                        <height>21</height>
                     </rect>
                 </property>
                 <property name="font">
                     <font>
-                        <weight>50</weight>
-                        <italic>false</italic>
-                        <bold>false</bold>
-                        <underline>false</underline>
-                        <kerning>true</kerning>
+                        <family>Consolas</family>
+                        <pointsize>10</pointsize>
                     </font>
                 </property>
                 <property name="mouseTracking">
@@ -179,7 +163,7 @@
                 </property>
                 <item>
                     <property name="text">
-                        <string>11(16.04-22.04)</string>
+                        <string>11 (16.04 - 22.04)</string>
                     </property>
                 </item>
             </widget>
@@ -244,8 +228,8 @@
             <widget class="QPushButton" name="parseButton">
                 <property name="geometry">
                     <rect>
-                        <x>613</x>
-                        <y>119</y>
+                        <x>730</x>
+                        <y>120</y>
                         <width>238</width>
                         <height>23</height>
                     </rect>
@@ -280,58 +264,63 @@
                     <string>Определить заголовки файлов</string>
                 </property>
             </widget>
-            <widget class="QWidget" name="">
+            <widget class="QLabel" name="grLabel">
                 <property name="geometry">
                     <rect>
-                        <x>461</x>
-                        <y>119</y>
-                        <width>148</width>
-                        <height>23</height>
+                        <x>462</x>
+                        <y>120</y>
+                        <width>40</width>
+                        <height>16</height>
                     </rect>
                 </property>
-                <layout class="QGridLayout" name="gridLayout">
-                    <item row="0" column="0">
-                        <widget class="QLabel" name="grLabel">
-                            <property name="text">
-                                <string>Группа:</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="1">
-                        <widget class="QComboBox" name="groupComboBox">
-                            <property name="sizePolicy">
-                                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="baseSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="font">
-                                <font>
-                                    <family>Consolas</family>
-                                    <pointsize>10</pointsize>
-                                </font>
-                            </property>
-                        </widget>
-                    </item>
-                </layout>
+                <property name="text">
+                    <string>Группа:</string>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="groupComboBox">
+                <property name="geometry">
+                    <rect>
+                        <x>508</x>
+                        <y>120</y>
+                        <width>201</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>100</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="baseSize">
+                    <size>
+                        <width>100</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Consolas</family>
+                        <pointsize>10</pointsize>
+                    </font>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="insertPolicy">
+                    <enum>QComboBox::NoInsert</enum>
+                </property>
             </widget>
             <zorder>layoutWidget</zorder>
             <zorder>layoutWidget</zorder>
             <zorder>label</zorder>
             <zorder>tableWidget1</zorder>
-            <zorder>filesLabel</zorder>
         </widget>
     </widget>
     <resources/>

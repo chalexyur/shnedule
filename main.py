@@ -32,18 +32,13 @@ def read_db_config(filename='config.ini', section='local-mysql'):  # чтени�
     return db
 
 
-def parse_groups(self, fname="files/all/0.xlsx", sheet=0):
+def parse_groups(self, fp, sn):
     dbconfig = read_db_config()
     conn = MySQLConnection(**dbconfig)
     cursor = conn.cursor()
 
-    cursor.execute("TRUNCATE TABLE groups")
-    conn.commit()
-
-    from openpyxl import load_workbook
-    wb = load_workbook(filename=fname, read_only=True)
-    print(wb.sheetnames)
-    ws = wb[wb.sheetnames[sheet]]
+    wb = load_workbook(filename=fp, read_only=True)
+    ws = wb[sn]
     for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
         for cols in row:
             string = str(cols.value)
@@ -81,7 +76,7 @@ class MyApp(QMainWindow):
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
         cursor = conn.cursor()
-        cursor.execute("SELECT name,code,year FROM groups")
+        cursor.execute("SELECT DISTINCT name,code,year FROM groups")
         grouplist = cursor.fetchall()
         for group in grouplist:
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
@@ -102,13 +97,24 @@ class MyApp(QMainWindow):
                     for cols in row:
                         value = str(cols.value)
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
+                            print(sheet)
                             print(value)
+                            parse_groups(self, fp=fpath, sn=sheet)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def update_group_list(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        parse_groups(self, fname="files/all/0.xlsx", sheet=0)
+        # parse_groups(self, fname="files/all/0.xlsx", sheet=0)
+        dbconfig = read_db_config()
+        conn = MySQLConnection(**dbconfig)
+        cursor = conn.cursor()
+        cursor.execute("SELECT DISTINCT name,code,year FROM groups")
+        grouplist = cursor.fetchall()
+        self.ui.groupComboBox.clear()
+        for group in grouplist:
+            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+        conn.close()
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):  # скачивание файла с сайта
