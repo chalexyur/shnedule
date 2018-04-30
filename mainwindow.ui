@@ -6,8 +6,8 @@
             <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>248</height>
+                <width>1174</width>
+                <height>503</height>
             </rect>
         </property>
         <property name="windowTitle">
@@ -143,64 +143,8 @@
             <widget class="QWidget" name="layoutWidget">
                 <property name="geometry">
                     <rect>
-                        <x>0</x>
-                        <y>0</y>
-                        <width>265</width>
-                        <height>22</height>
-                    </rect>
-                </property>
-                <layout class="QGridLayout" name="gridLayout">
-                    <item row="0" column="1">
-                        <widget class="QComboBox" name="comboBox">
-                            <property name="font">
-                                <font>
-                                    <weight>50</weight>
-                                    <italic>false</italic>
-                                    <bold>false</bold>
-                                    <underline>false</underline>
-                                    <kerning>true</kerning>
-                                </font>
-                            </property>
-                            <property name="mouseTracking">
-                                <bool>false</bool>
-                            </property>
-                            <property name="frame">
-                                <bool>true</bool>
-                            </property>
-                            <item>
-                                <property name="text">
-                                    <string>11(16.04-22.04)</string>
-                                </property>
-                            </item>
-                        </widget>
-                    </item>
-                    <item row="0" column="2">
-                        <widget class="QLabel" name="weekLabel">
-                            <property name="font">
-                                <font>
-                                    <weight>75</weight>
-                                    <bold>true</bold>
-                                </font>
-                            </property>
-                            <property name="text">
-                                <string>TextLabel</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="0">
-                        <widget class="QLabel" name="label_2">
-                            <property name="text">
-                                <string>Текущая неделя:</string>
-                            </property>
-                        </widget>
-                    </item>
-                </layout>
-            </widget>
-            <widget class="QWidget" name="">
-                <property name="geometry">
-                    <rect>
-                        <x>470</x>
-                        <y>10</y>
+                        <x>460</x>
+                        <y>60</y>
                         <width>392</width>
                         <height>112</height>
                     </rect>
@@ -272,15 +216,86 @@
                     </item>
                 </layout>
             </widget>
+            <widget class="QLabel" name="filesLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>300</x>
+                        <y>0</y>
+                        <width>151</width>
+                        <height>16</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>На сайте: 90 xlsx и 20 pdf</string>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="comboBox">
+                <property name="geometry">
+                    <rect>
+                        <x>180</x>
+                        <y>0</y>
+                        <width>106</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <weight>50</weight>
+                        <italic>false</italic>
+                        <bold>false</bold>
+                        <underline>false</underline>
+                        <kerning>true</kerning>
+                    </font>
+                </property>
+                <property name="mouseTracking">
+                    <bool>false</bool>
+                </property>
+                <property name="frame">
+                    <bool>true</bool>
+                </property>
+                <item>
+                    <property name="text">
+                        <string>11(16.04-22.04)</string>
+                    </property>
+                </item>
+            </widget>
+            <widget class="QLabel" name="weekLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>100</x>
+                        <y>0</y>
+                        <width>56</width>
+                        <height>16</height>
+                    </rect>
+                </property>
+                <property name="font">
+                    <font>
+                        <weight>75</weight>
+                        <bold>true</bold>
+                    </font>
+                </property>
+                <property name="text">
+                    <string>TextLabel</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="label_2">
+                <property name="geometry">
+                    <rect>
+                        <x>1</x>
+                        <y>1</y>
+                        <width>89</width>
+                        <height>16</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Текущая неделя:</string>
+                </property>
+            </widget>
+            <zorder>layoutWidget</zorder>
             <zorder>layoutWidget</zorder>
             <zorder>label</zorder>
-            <zorder>dwnldButton</zorder>
             <zorder>tableWidget1</zorder>
-            <zorder>label_3</zorder>
-            <zorder>groupComboBox</zorder>
-            <zorder>toTablesButton</zorder>
-            <zorder>updGlButton</zorder>
-            <zorder>parseButton</zorder>
+            <zorder>filesLabel</zorder>
         </widget>
     </widget>
     <resources/>

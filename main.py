@@ -1,20 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
+from configparser import ConfigParser
+from mysql.connector import MySQLConnection, Error
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTableWidget, QTableWidgetItem
 from PyQt5 import uic
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import *
-from mysql.connector import MySQLConnection, Error
 from bs4 import BeautifulSoup
 import urllib.request
+import sys
 import os, os.path
 import openpyxl
 from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-from configparser import ConfigParser
 import re
 from datetime import datetime, timedelta
 
@@ -42,7 +42,7 @@ class MyApp(QMainWindow):
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse)
-        self.ui.updGlButton.clicked.connect(self.update_group_list)
+        self.ui.updGlButton.clicked.connect(self.update_group_list("files/all/0.xlsx"))
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.titles)
 
@@ -77,7 +77,7 @@ class MyApp(QMainWindow):
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
-    def update_group_list(self):  # получение из файла названий всех групп и запись в бд
+    def update_group_list(self, fname="files/all/0.xlsx"):  # получение из файла названий всех групп и запись в бд
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         dbconfig = read_db_config()
         conn = MySQLConnection(**dbconfig)
@@ -87,7 +87,7 @@ class MyApp(QMainWindow):
         conn.commit()
 
         from openpyxl import load_workbook
-        wb = load_workbook(filename='files/iit/IIT-2k-17_18-vesna.xlsx', read_only=True)
+        wb = load_workbook(filename=fname, read_only=True)
         ws = wb['Лист1']
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
