@@ -183,6 +183,8 @@ class MyApp(QMainWindow):
         html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_doc, "html.parser")
         i = 0
+        if not os.path.exists("files/all/"):
+            os.makedirs("files/all/")
         for links in soup.find_all('a'):
             if links.get('href').find(".xlsx") != -1:
                 link = links.get('href')
@@ -190,9 +192,8 @@ class MyApp(QMainWindow):
                 print(i)
                 urllib.request.urlretrieve(link, "files/all/" + str(i) + ".xlsx")
                 i += 1
+
         """
-        if not os.path.exists("files"):
-            os.makedirs("files")
         if not os.path.exists("files/iit"):
             os.makedirs("files/iit")
         urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")"""
