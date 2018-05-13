@@ -92,8 +92,9 @@ except Error as error:
     print(error)'''
 
 
-def parse_groups(worksheet, path_id):
+def parse_groups(worksheet):
     ws = worksheet
+    groupsstring = ""
     for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
         for cols in row:
             string = str(cols.value)
@@ -102,12 +103,13 @@ def parse_groups(worksheet, path_id):
                 print(string)
                 string = match[0]
                 print(string)
+                groupsstring += string + ','
                 try:
                     # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
                     # (None, group[0], group[1], int(group[2]), None, None, None, None))
 
-                    cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s, %s)",
-                                   (None, string, None, None, None, path_id))
+                    cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s)",
+                                   (None, string, None, None, None))
                     # (group[0], group[1], group[2]))
                     # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
                     # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
@@ -115,6 +117,7 @@ def parse_groups(worksheet, path_id):
                 except Error as error:
                     print(error)
     conn.commit()
+    return groupsstring
 
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
@@ -146,7 +149,7 @@ class MyApp(QMainWindow):
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, qfiles):
+        for i in range(0, 99):
             fpath = folder + str(i) + ".xlsx"
             print(fpath)
             if not os.path.exists(fpath):
@@ -155,22 +158,16 @@ class MyApp(QMainWindow):
             for index, sheet in enumerate(wb.sheetnames):
                 ws = wb[sheet]
                 for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=4):
-                    print(row)
                     for cols in row:
-                        print(cols)
                         value = str(cols.value)
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
-
-                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s)",
+                            groupsstring = parse_groups(ws)
+                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
                                            (None, None, None, None, None, datetime.now(), None, fpath, None, value,
-                                            None))
+                                            None, groupsstring))
                             conn.commit()
-                            cursor.execute("SELECT LAST_INSERT_ID()")
-                            path_id = cursor.fetchone()[0]
-                            print(path_id)
-                            parse_groups(ws, path_id)
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
@@ -273,21 +270,21 @@ class MyApp(QMainWindow):
 
     def tle(self):
         try:
-            cursor.execute("DELETE FROM paths;")
+            cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
 
     def tgr(self):
         try:
-            cursor.execute("DELETE FROM paths;")
+            cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
 
     def tpa(self):
         try:
-            cursor.execute("DELETE FROM paths;")
+            cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
