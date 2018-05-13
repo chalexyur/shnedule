@@ -316,46 +316,55 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget class="QWidget" name="">
+            <widget class="QGroupBox" name="groupBox">
                 <property name="geometry">
                     <rect>
                         <x>10</x>
-                        <y>470</y>
-                        <width>239</width>
-                        <height>25</height>
+                        <y>430</y>
+                        <width>257</width>
+                        <height>56</height>
                     </rect>
+                </property>
+                <property name="title">
+                    <string>TRUNCATE</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout">
                     <item row="0" column="0">
                         <widget class="QPushButton" name="tgrButton">
                             <property name="text">
-                                <string>tgr</string>
+                                <string>groups</string>
                             </property>
                         </widget>
                     </item>
                     <item row="0" column="1">
                         <widget class="QPushButton" name="tpaButton">
                             <property name="text">
-                                <string>rpat</string>
+                                <string>paths</string>
                             </property>
                         </widget>
                     </item>
                     <item row="0" column="2">
                         <widget class="QPushButton" name="tleButton">
                             <property name="text">
-                                <string>tles</string>
+                                <string>lessons</string>
                             </property>
                         </widget>
                     </item>
                 </layout>
             </widget>
-            <zorder>layoutWidget</zorder>
+            <zorder>comboBox</zorder>
+            <zorder>weekLabel</zorder>
+            <zorder>label_2</zorder>
+            <zorder>dwnldButton</zorder>
+            <zorder>updGlButton</zorder>
+            <zorder>parseButton</zorder>
+            <zorder>toTablesButton</zorder>
+            <zorder>titleButton</zorder>
+            <zorder>groupComboBox</zorder>
             <zorder>layoutWidget</zorder>
             <zorder>label</zorder>
             <zorder>tableWidget1</zorder>
-            <zorder>tleButton</zorder>
-            <zorder>tgrButton</zorder>
-            <zorder>tpaButton</zorder>
+            <zorder>groupBox</zorder>
         </widget>
     </widget>
     <resources/>

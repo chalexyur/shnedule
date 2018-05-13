@@ -38,7 +38,7 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
-try:
+'''try:
 
     cursor.execute("""
     create table IF NOT EXISTS lessons
@@ -89,7 +89,7 @@ try:
     cursor.execute("create index path_id on groups (path_id)")
     conn.commit()
 except Error as error:
-    print(error)
+    print(error)'''
 
 
 def parse_groups(worksheet, path_id):
@@ -146,21 +146,26 @@ class MyApp(QMainWindow):
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, 5):
+        for i in range(0, qfiles):
             fpath = folder + str(i) + ".xlsx"
             print(fpath)
+            if not os.path.exists(fpath):
+                continue
             wb = load_workbook(filename=fpath, read_only=True)
             for index, sheet in enumerate(wb.sheetnames):
                 ws = wb[sheet]
                 for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=4):
+                    print(row)
                     for cols in row:
+                        print(cols)
                         value = str(cols.value)
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
 
-                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s)",
-                                           (None, None, None, None, None, datetime.now(), None, fpath, None))
+                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s)",
+                                           (None, None, None, None, None, datetime.now(), None, fpath, None, value,
+                                            None))
                             conn.commit()
                             cursor.execute("SELECT LAST_INSERT_ID()")
                             path_id = cursor.fetchone()[0]
