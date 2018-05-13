@@ -129,7 +129,7 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
-        self.ui.parseButton.clicked.connect(self.parse)
+        self.ui.parseButton.clicked.connect(self.parse_lessons_for_group)
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.titles)
@@ -216,17 +216,26 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse(self):
+    def parse_lessons_for_group(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
+        groupname = self.ui.groupComboBox.currentText()
+        print(groupname)
+        try:
+            cursor.execute("SELECT filename FROM paths WHERE groups LIKE %s",  # доработать выборку
+                           ("%" + groupname + "%",))
+        except Error as error:
+            print(error)
+        fname = cursor.fetchone()[0];
+        print(fname)
         from openpyxl import load_workbook
-        wb = load_workbook(filename='files/all/0.xlsx', read_only=True)
+        wb = load_workbook(filename=fname, read_only=True)
         ws = wb['Лист1']
 
         x = 0
         y = 0
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
-                if cols.value == self.ui.groupComboBox.currentText():
+                if cols.value == groupname:
                     y = cols.row
                     x = cols.column
                     break
