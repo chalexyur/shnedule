@@ -18,6 +18,54 @@ from mysql.connector import MySQLConnection, Error
 from openpyxl import load_workbook
 from openpyxl.compat import range
 
+"""create table groups
+(
+  id          int auto_increment
+    primary key,
+  group_name  varchar(50) not null,
+  quantity    int         null,
+  institute   varchar(50) null,
+  last_update datetime    null,
+  constraint groups_group_name_uindex
+  unique (group_name)
+);
+
+create table lessons
+(
+  id       int auto_increment
+    primary key,
+  `group`  varchar(10)  null,
+  day      int(1)       null,
+  number   int(1)       null,
+  even     tinyint(1)   null,
+  title    varchar(100) null,
+  type     varchar(20)  null,
+  teacher  varchar(50)  null,
+  room     varchar(10)  null,
+  weeks    varchar(50)  null,
+  subgroup int(1)       null,
+  campus   varchar(50)  null
+);
+
+create table paths
+(
+  id          int auto_increment
+    primary key,
+  institute   varchar(50)  null,
+  prog        varchar(50)  null,
+  course      int          null,
+  ses         varchar(50)  null,
+  last_update datetime     null,
+  past_size   int          null,
+  filename    varchar(50)  null,
+  sheet       varchar(50)  null,
+  title       varchar(100) null,
+  university  varchar(50)  null,
+  groups      varchar(999) null
+);
+
+"""
+
 
 def read_db_config():
     filename = 'config.ini'
