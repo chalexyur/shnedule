@@ -197,7 +197,7 @@ class MyApp(QMainWindow):
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, 99):
+        for i in range(0, 5):
             fpath = folder + str(i) + ".xlsx"
             print(fpath)
             if not os.path.exists(fpath):
@@ -211,9 +211,14 @@ class MyApp(QMainWindow):
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
+                            match1 = re.search(r'\w*\d\w*', value)
+                            course = match1[0]
+                            match2 = re.search(r'\w*занятий\w*', value)
+                            ses = match2[0]
+                            print(ses)
                             groupsstring = parse_groups(ws)
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
-                                           (None, None, None, None, None, datetime.now(), None, fpath, None, value,
+                                           (None, None, None, course, None, datetime.now(), None, fpath, None, value,
                                             None, groupsstring))
                             conn.commit()
 
@@ -251,13 +256,15 @@ class MyApp(QMainWindow):
 
     def to_tables(self):
         print(self.ui.groupComboBox.currentText())
-        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=1 AND even=0 AND `group`=%s",
+        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=6 AND even=1 AND `group`=%s",
                        (self.ui.groupComboBox.currentText(),))
         print("exec")
         lessons = cursor.fetchall()
 
         for i in range(6):
             for j in range(4):
+                if lessons[i][j] == "день" or "самостолятельных" or "занятий":
+                    continue
                 self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lessons[i][j]))
         self.ui.tableWidget1.setColumnWidth(0, 30)
         self.ui.tableWidget1.setColumnWidth(1, 170)
