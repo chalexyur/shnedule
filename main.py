@@ -18,55 +18,6 @@ from mysql.connector import MySQLConnection, Error
 from openpyxl import load_workbook
 from openpyxl.compat import range
 
-"""create table groups
-(
-  id          int auto_increment
-    primary key,
-  group_name  varchar(50) not null,
-  quantity    int         null,
-  institute   varchar(50) null,
-  last_update datetime    null,
-  constraint groups_group_name_uindex
-  unique (group_name)
-);
-
-create table lessons
-(
-  id       int auto_increment
-    primary key,
-  `group`  varchar(10)  null,
-  day      int(1)       null,
-  number   int(1)       null,
-  even     tinyint(1)   null,
-  title    varchar(100) null,
-  type     varchar(20)  null,
-  teacher  varchar(50)  null,
-  room     varchar(10)  null,
-  weeks    varchar(50)  null,
-  subgroup int(1)       null,
-  campus   varchar(50)  null
-);
-
-create table paths
-(
-  id          int auto_increment
-    primary key,
-  institute   varchar(50)  null,
-  prog        varchar(50)  null,
-  course      int          null,
-  ses         varchar(50)  null,
-  last_update datetime     null,
-  past_size   int          null,
-  filename    varchar(50)  null,
-  sheet       varchar(50)  null,
-  title       varchar(100) null,
-  university  varchar(50)  null,
-  groups      varchar(999) null
-);
-
-"""
-
-
 def read_db_config():
     filename = 'config.ini'
     section = 'local-mysql'
@@ -86,21 +37,21 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
-'''try:
+try:
 
     cursor.execute("""
     create table IF NOT EXISTS lessons
     (
-          id       int auto_increment
+         id       int auto_increment
     primary key,
   `group`  varchar(10)  null,
   day      int(1)       null,
   number   int(1)       null,
   even     tinyint(1)   null,
-  title    varchar(100) null,
+  title    varchar(999) null,
   type     varchar(20)  null,
   teacher  varchar(50)  null,
-  room     varchar(10)  null,
+  room     varchar(20)  null,
   weeks    varchar(50)  null,
   subgroup int(1)       null,
   campus   varchar(50)  null
@@ -110,34 +61,33 @@ cursor = conn.cursor()
     (
        id          int auto_increment
     primary key,
-  institute   varchar(50) null,
-  prog        varchar(50) null,
-  course      int         null,
-  ses         varchar(50) null,
-  last_update datetime    null,
-  past_size   int         null,
-  filename    varchar(50) null,
-  sheet       varchar(50) null
+  institute   varchar(50)  null,
+  prog        varchar(50)  null,
+  course      int          null,
+  ses         varchar(50)  null,
+  last_update datetime     null,
+  past_size   int          null,
+  filename    varchar(50)  null,
+  sheet       varchar(50)  null,
+  title       varchar(100) null,
+  university  varchar(50)  null,
+  groups      varchar(999) null
 );""")
     cursor.execute("""
         create table IF NOT EXISTS groups
         (
           id          int auto_increment
-        primary key,
-      group_name  varchar(50) not null,
-      quantity    int         null,
-      institute   varchar(50) null,
-      last_update datetime    null,
-      path_id     int         null,
-      constraint groups_group_name_uindex
-      unique (group_name),
-      constraint groups_ibfk_1
-      foreign key (path_id) references paths (id)
+    primary key,
+  group_name  varchar(50) not null,
+  quantity    int         null,
+  institute   varchar(50) null,
+  last_update datetime    null,
+  constraint groups_group_name_uindex
+  unique (group_name)
     );""")
-    cursor.execute("create index path_id on groups (path_id)")
     conn.commit()
 except Error as error:
-    print(error)'''
+    print(error)
 
 
 def parse_groups(worksheet):
@@ -197,7 +147,7 @@ class MyApp(QMainWindow):
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, 5):
+        for i in range(0, qfiles):
             fpath = folder + str(i) + ".xlsx"
             print(fpath)
             if not os.path.exists(fpath):
@@ -211,15 +161,34 @@ class MyApp(QMainWindow):
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             print(sheet)
                             print(value)
+                            course = ses = institute = "zero"
+                            university = "МИРЭА"
                             match1 = re.search(r'\w*\d\w*', value)
-                            course = match1[0]
+                            if match1:
+                                course = match1[0]
                             match2 = re.search(r'\w*занятий\w*', value)
-                            ses = match2[0]
-                            print(ses)
+                            if match2:
+                                ses = "занятия"
+                            match3 = re.search(r'\w*ИНТЕГУ\w*', value)
+                            if match3:
+                                institute = "ИНТЕГУ"
+                            match3 = re.search(r'\w*КБиСП\w*', value)
+                            if match3:
+                                institute = "КБиСП"
+                            match3 = re.search(r'\w*кибернетики\w*', value)
+                            if match3:
+                                institute = "ИК"
+                            match3 = re.search(r'\w*ФТИ\w*', value)
+                            if match3:
+                                institute = "ФТИ"
+                            match3 = re.search(r'\w*\bФизико\s*-\s*технологического\w*\b', value)
+                            if match3:
+                                institute = "ФТИ"
                             groupsstring = parse_groups(ws)
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
-                                           (None, None, None, course, None, datetime.now(), None, fpath, None, value,
-                                            None, groupsstring))
+                                           (
+                                           None, institute, None, course, ses, datetime.now(), None, fpath, None, value,
+                                           None, groupsstring))
                             conn.commit()
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
@@ -333,25 +302,31 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def tle(self):
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         try:
             cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def tgr(self):
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         try:
             cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def tpa(self):
+        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         try:
             cursor.execute("TRUNCATE TABLE paths;")
             conn.commit()
         except Error as error:
             print(error)
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def closeEvent(self, event):
         conn.close()
