@@ -7,13 +7,15 @@ import re
 import urllib.request
 from configparser import ConfigParser
 from datetime import datetime
-from PyQt5 import QtCore, QtGui
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from bs4 import BeautifulSoup
-from mysql.connector import MySQLConnection, Error
+from mysql.connector import Error
+from mysql.connector import MySQLConnection
 from openpyxl import load_workbook
 from openpyxl.compat import range
 
@@ -100,18 +102,16 @@ def parse_groups(worksheet):
             if match:
                 # print(string)
                 string = match[0]
-                #print(string)
+                # print(string)
                 groupsstring += string + ','
                 try:
                     # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
                     # (None, group[0], group[1], int(group[2]), None, None, None, None))
-
                     cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s)",
                                    (None, string, None, None, None))
                     # (group[0], group[1], group[2]))
                     # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
                     # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
-
                 except Error as error:
                     print(error)
     conn.commit()
@@ -127,10 +127,10 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
-        self.ui.parseButton.clicked.connect(self.parse_lessons_for_group)
+        self.ui.parseButton.clicked.connect(self.parse_lessons)
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
-        self.ui.titleButton.clicked.connect(self.titles)
+        self.ui.titleButton.clicked.connect(self.parse_titles)
         self.ui.tleButton.clicked.connect(self.tle)
         self.ui.tgrButton.clicked.connect(self.tgr)
         self.ui.tpaButton.clicked.connect(self.tpa)
@@ -142,9 +142,9 @@ class MyApp(QMainWindow):
         for group in grouplist:
             self.ui.groupComboBox.addItem('-'.join(map(str, group)))
 
-    def titles(self):
+    def parse_titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        folder = "files/all/"
+        folder = "files/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
         for i in range(0, 99):
@@ -220,7 +220,7 @@ class MyApp(QMainWindow):
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
                                            (
                                                None, institute, prog, course, ses, datetime.now(), size, fpath, sheet,
-                                               value,
+                                               None,
                                                university, groupsstring))
                             conn.commit()
 
@@ -237,35 +237,29 @@ class MyApp(QMainWindow):
 
     def download(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        html_doc = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
-        soup = BeautifulSoup(html_doc, "html.parser")
-        i = 0
-        if not os.path.exists("files/all/"):
-            os.makedirs("files/all/")
-        for links in soup.find_all('a'):
-            if links.get('href').find(".xlsx") != -1:
-                link = links.get('href')
-                print(link)
-                print(i)
-                urllib.request.urlretrieve(link, "files/all/" + str(i) + ".xlsx")
-                i += 1
+        html_page = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
+        soup = BeautifulSoup(html_page, "html.parser")
+        if not os.path.exists("files/"):
+            os.makedirs("files/")
 
-        """
-        if not os.path.exists("files/iit"):
-            os.makedirs("files/iit")
-        urllib.request.urlretrieve(link, "files/iit/IIT-2k-17_18-vesna.xlsx")"""
+        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
+            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
+        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
+            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
+        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
+            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):
-        print(self.ui.groupComboBox.currentText())
-        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=6 AND even=1 AND `group`=%s",
-                       (self.ui.groupComboBox.currentText(),))
-        print("exec")
+        group = str(self.ui.groupComboBox.currentText())
+        day = self.ui.daySpinBox.value()
+        even = self.ui.evenCheckBox.Checked()
+        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=%s AND even=%s AND `group` = %s",
+                       (day, even, group))
         lessons = cursor.fetchall()
-
         for i in range(6):
             for j in range(4):
-                if lessons[i][j] == "день" or "самостолятельных" or "занятий":
+                if lessons[i][j] == ("день" or "самостолятельных" or "занятий"):
                     continue
                 self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lessons[i][j]))
         self.ui.tableWidget1.setColumnWidth(0, 30)
@@ -273,26 +267,32 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse_lessons_for_group(self):
+    def parse_lessons(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         groupname = self.ui.groupComboBox.currentText()
         print(groupname)
         try:
-            cursor.execute("SELECT filename FROM paths WHERE groups LIKE %s",  # доработать выборку
+            cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
+                           # доработать выборку
                            ("%" + groupname + "%",))
         except Error as error:
             print(error)
-        fname = cursor.fetchone()[0];
-        print(fname)
+
+        fetch = cursor.fetchone();
+        fname = fetch[0]
+        sheet = fetch[1]
+        print(fname, sheet)
         from openpyxl import load_workbook
         wb = load_workbook(filename=fname, read_only=True)
-        ws = wb['Лист1']
+        ws = wb[sheet]
 
         x = 0
         y = 0
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
-                if cols.value == groupname:
+                # strvalue = ""
+                # strvalue = cols.value
+                if groupname in str(cols.value):
                     y = cols.row
                     x = cols.column
                     break
@@ -337,7 +337,7 @@ class MyApp(QMainWindow):
     def tle(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         try:
-            cursor.execute("TRUNCATE TABLE paths;")
+            cursor.execute("TRUNCATE TABLE lessons;")
             conn.commit()
         except Error as error:
             print(error)
@@ -346,7 +346,7 @@ class MyApp(QMainWindow):
     def tgr(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
         try:
-            cursor.execute("TRUNCATE TABLE paths;")
+            cursor.execute("TRUNCATE TABLE groups;")
             conn.commit()
         except Error as error:
             print(error)
@@ -369,8 +369,9 @@ class MyApp(QMainWindow):
 
 if __name__ == "__main__":
     import sys
+
     app = QApplication(sys.argv)
-    app.setStyle('Fusion')
+    '''app.setStyle('Fusion')
     palette = QtGui.QPalette()
     palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
     palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
@@ -384,7 +385,7 @@ if __name__ == "__main__":
     palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
     palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
     palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
-    app.setPalette(palette)
+    app.setPalette(palette)'''
 
     window = MyApp()
     window.show()

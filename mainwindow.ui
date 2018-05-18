@@ -6,8 +6,8 @@
             <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1174</width>
-                <height>503</height>
+                <width>939</width>
+                <height>482</height>
             </rect>
         </property>
         <property name="windowTitle">
@@ -19,26 +19,13 @@
             </iconset>
         </property>
         <widget class="QWidget" name="centralwidget">
-            <widget class="QLabel" name="label">
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>90</width>
-                        <height>18</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Понедельник:</string>
-                </property>
-            </widget>
             <widget class="QTableWidget" name="tableWidget1">
                 <property name="geometry">
                     <rect>
                         <x>10</x>
                         <y>50</y>
-                        <width>431</width>
-                        <height>181</height>
+                        <width>681</width>
+                        <height>191</height>
                     </rect>
                 </property>
                 <property name="frameShape">
@@ -202,8 +189,8 @@
             <widget class="QPushButton" name="dwnldButton">
                 <property name="geometry">
                     <rect>
-                        <x>461</x>
-                        <y>61</y>
+                        <x>720</x>
+                        <y>0</y>
                         <width>118</width>
                         <height>30</height>
                     </rect>
@@ -212,65 +199,156 @@
                     <string>Скачать файлы</string>
                 </property>
             </widget>
-            <widget class="QPushButton" name="updGlButton">
-                <property name="geometry">
-                    <rect>
-                        <x>420</x>
-                        <y>310</y>
-                        <width>90</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Группы --&gt;</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" name="parseButton">
-                <property name="geometry">
-                    <rect>
-                        <x>760</x>
-                        <y>310</y>
-                        <width>310</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Спарсить расписание для выбранной группы</string>
-                </property>
-            </widget>
-            <widget class="QPushButton" name="toTablesButton">
-                <property name="geometry">
-                    <rect>
-                        <x>150</x>
-                        <y>290</y>
-                        <width>87</width>
-                        <height>30</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>В таблицы</string>
-                </property>
-            </widget>
             <widget class="QPushButton" name="titleButton">
                 <property name="geometry">
                     <rect>
-                        <x>620</x>
-                        <y>60</y>
-                        <width>217</width>
+                        <x>720</x>
+                        <y>40</y>
+                        <width>191</width>
                         <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Определить заголовки файлов</string>
+                    <string>Спарсить заголовки и группы</string>
+                </property>
+            </widget>
+            <widget class="QGroupBox" name="groupBox">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>390</y>
+                        <width>293</width>
+                        <height>64</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>TRUNCATE</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                    <item row="0" column="0">
+                        <widget class="QPushButton" name="tgrButton">
+                            <property name="text">
+                                <string>groups</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QPushButton" name="tpaButton">
+                            <property name="text">
+                                <string>paths</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="2">
+                        <widget class="QPushButton" name="tleButton">
+                            <property name="text">
+                                <string>lessons</string>
+                            </property>
+                        </widget>
+                    </item>
+                </layout>
+            </widget>
+            <widget class="QGroupBox" name="groupBox_2">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>280</y>
+                        <width>401</width>
+                        <height>101</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Работа с выбранной группой</string>
+                </property>
+                <widget class="QPushButton" name="parseButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>20</y>
+                            <width>141</width>
+                            <height>30</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Спарсить расписание</string>
+                    </property>
+                </widget>
+                <widget class="QWidget" name="">
+                    <property name="geometry">
+                        <rect>
+                            <x>21</x>
+                            <y>60</y>
+                            <width>367</width>
+                            <height>32</height>
+                        </rect>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_2">
+                        <item row="0" column="0">
+                            <widget class="QLabel" name="label">
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>80</width>
+                                        <height>0</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>День недели:</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="1">
+                            <widget class="QSpinBox" name="daySpinBox">
+                                <property name="minimum">
+                                    <number>1</number>
+                                </property>
+                                <property name="maximum">
+                                    <number>6</number>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="2">
+                            <widget class="QCheckBox" name="evenCheckBox">
+                                <property name="text">
+                                    <string>Чётная</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="3">
+                            <widget class="QPushButton" name="toTablesButton">
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>150</width>
+                                        <height>30</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>Отобразить в таблице</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </widget>
+            <widget class="QPushButton" name="updGlButton">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>250</y>
+                        <width>111</width>
+                        <height>30</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Обновить список</string>
                 </property>
             </widget>
             <widget class="QComboBox" name="groupComboBox">
                 <property name="geometry">
                     <rect>
-                        <x>589</x>
-                        <y>310</y>
-                        <width>165</width>
-                        <height>25</height>
+                        <x>10</x>
+                        <y>250</y>
+                        <width>132</width>
+                        <height>21</height>
                     </rect>
                 </property>
                 <property name="sizePolicy">
@@ -316,54 +394,16 @@
                     <bool>true</bool>
                 </property>
             </widget>
-            <widget class="QGroupBox" name="groupBox">
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>430</y>
-                        <width>293</width>
-                        <height>64</height>
-                    </rect>
-                </property>
-                <property name="title">
-                    <string>TRUNCATE</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout">
-                    <item row="0" column="0">
-                        <widget class="QPushButton" name="tgrButton">
-                            <property name="text">
-                                <string>groups</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="1">
-                        <widget class="QPushButton" name="tpaButton">
-                            <property name="text">
-                                <string>paths</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="0" column="2">
-                        <widget class="QPushButton" name="tleButton">
-                            <property name="text">
-                                <string>lessons</string>
-                            </property>
-                        </widget>
-                    </item>
-                </layout>
-            </widget>
             <zorder>comboBox</zorder>
             <zorder>weekLabel</zorder>
             <zorder>label_2</zorder>
             <zorder>dwnldButton</zorder>
-            <zorder>updGlButton</zorder>
-            <zorder>parseButton</zorder>
-            <zorder>toTablesButton</zorder>
             <zorder>titleButton</zorder>
-            <zorder>groupComboBox</zorder>
-            <zorder>label</zorder>
             <zorder>tableWidget1</zorder>
             <zorder>groupBox</zorder>
+            <zorder>groupBox_2</zorder>
+            <zorder>updGlButton</zorder>
+            <zorder>groupComboBox</zorder>
         </widget>
     </widget>
     <resources/>
