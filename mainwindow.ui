@@ -7,7 +7,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>939</width>
-                <height>482</height>
+                <height>622</height>
             </rect>
         </property>
         <property name="windowTitle">
@@ -215,8 +215,8 @@
             <widget class="QGroupBox" name="groupBox">
                 <property name="geometry">
                     <rect>
-                        <x>10</x>
-                        <y>390</y>
+                        <x>30</x>
+                        <y>470</y>
                         <width>293</width>
                         <height>64</height>
                     </rect>
@@ -251,8 +251,8 @@
             <widget class="QGroupBox" name="groupBox_2">
                 <property name="geometry">
                     <rect>
-                        <x>10</x>
-                        <y>280</y>
+                        <x>30</x>
+                        <y>360</y>
                         <width>401</width>
                         <height>101</height>
                     </rect>
@@ -332,8 +332,8 @@
             <widget class="QPushButton" name="updGlButton">
                 <property name="geometry">
                     <rect>
-                        <x>150</x>
-                        <y>250</y>
+                        <x>170</x>
+                        <y>330</y>
                         <width>111</width>
                         <height>30</height>
                     </rect>
@@ -345,8 +345,8 @@
             <widget class="QComboBox" name="groupComboBox">
                 <property name="geometry">
                     <rect>
-                        <x>10</x>
-                        <y>250</y>
+                        <x>30</x>
+                        <y>330</y>
                         <width>132</width>
                         <height>21</height>
                     </rect>
@@ -381,6 +381,9 @@
                 <property name="currentText">
                     <string/>
                 </property>
+                <property name="maxVisibleItems">
+                    <number>10</number>
+                </property>
                 <property name="insertPolicy">
                     <enum>QComboBox::NoInsert</enum>
                 </property>
@@ -389,6 +392,52 @@
                 </property>
                 <property name="minimumContentsLength">
                     <number>15</number>
+                </property>
+                <property name="frame">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="instituteComboBox">
+                <property name="geometry">
+                    <rect>
+                        <x>30</x>
+                        <y>300</y>
+                        <width>76</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="baseSize">
+                    <size>
+                        <width>100</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="font">
+                    <font>
+                        <family>Consolas</family>
+                        <pointsize>10</pointsize>
+                    </font>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="currentText">
+                    <string/>
+                </property>
+                <property name="insertPolicy">
+                    <enum>QComboBox::NoInsert</enum>
+                </property>
+                <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <property name="minimumContentsLength">
+                    <number>7</number>
                 </property>
                 <property name="frame">
                     <bool>true</bool>
@@ -404,6 +453,7 @@
             <zorder>groupBox_2</zorder>
             <zorder>updGlButton</zorder>
             <zorder>groupComboBox</zorder>
+            <zorder>instituteComboBox</zorder>
         </widget>
     </widget>
     <resources/>

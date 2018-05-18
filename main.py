@@ -93,7 +93,7 @@ except Error as error:
     print(error)
 
 
-def parse_groups(worksheet):
+def parse_groups(worksheet, institute):
     ws = worksheet
     groupsstring = ""
     for row in ws.iter_rows(min_row=2, max_row=3, min_col=1, max_col=200):
@@ -110,7 +110,7 @@ def parse_groups(worksheet):
                     # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
                     # (None, group[0], group[1], int(group[2]), None, None, None, None))
                     cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s)",
-                                   (None, string, None, None, None))
+                                   (None, string, None, institute, None))
                     # (group[0], group[1], group[2]))
                     # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
                     # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
@@ -136,10 +136,11 @@ class MyApp(QMainWindow):
         self.ui.tleButton.clicked.connect(self.tle)
         self.ui.tgrButton.clicked.connect(self.tgr)
         self.ui.tpaButton.clicked.connect(self.tpa)
+        self.ui.instituteComboBox.activated.connect(self.update_group_list)
 
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
 
-        self.update_group_list()
+        self.update_institute_list()
 
     def parse_titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -211,7 +212,7 @@ class MyApp(QMainWindow):
                             match4 = re.search(r'\w*магистратуры\w*', value)
                             if match4:
                                 prog = "магистратура"
-                            groupsstring = parse_groups(ws)
+                            groupsstring = parse_groups(ws, institute)
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
                                            (
                                                None, institute, prog, course, ses, datetime.now(), size, fpath, sheet,
@@ -220,15 +221,30 @@ class MyApp(QMainWindow):
                             conn.commit()
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
+    def update_institute_list(self):
+        cursor.execute("SELECT institute FROM paths")
+        ins_tuple = cursor.fetchall()
+        self.ui.instituteComboBox.clear()
+        ins_list = []
+        for ins in ins_tuple:
+            ins_list.append(ins[0])
+        ins_list = sorted(set(ins_list))
+        for i in ins_list:
+            self.ui.instituteComboBox.addItem(i)
+
     def update_group_list(self):
-        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        cursor.execute("SELECT group_name FROM groups")
+        ins = self.ui.instituteComboBox.currentText()
+        try:
+            cursor.execute("SELECT group_name FROM groups WHERE institute=%s",
+                           (ins,))
+        except Error as error:
+            print(error)
+
         grouplist = cursor.fetchall()
         self.ui.groupComboBox.clear()
         for group in grouplist:
             strgroup = '-'.join(map(str, group))
             self.ui.groupComboBox.addItem(strgroup)
-        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
