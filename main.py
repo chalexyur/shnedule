@@ -39,6 +39,7 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
+
 try:
 
     cursor.execute("""
@@ -102,6 +103,7 @@ def parse_groups(worksheet):
             if match:
                 # print(string)
                 string = match[0]
+                # print(gr_code)
                 # print(string)
                 groupsstring += string + ','
                 try:
@@ -137,10 +139,7 @@ class MyApp(QMainWindow):
 
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
 
-        cursor.execute("SELECT group_name FROM groups")
-        grouplist = cursor.fetchall()
-        for group in grouplist:
-            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+        self.update_group_list()
 
     def parse_titles(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -161,7 +160,6 @@ class MyApp(QMainWindow):
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
                             # print(sheet)
                             # print(value)
-                            size = 0
                             size = os.path.getsize(fpath)
                             course = 0
                             ses = institute = "zero"
@@ -188,10 +186,7 @@ class MyApp(QMainWindow):
                             match3 = re.search(r'\w*кибернетики\w*', value)
                             if match3:
                                 institute = "ИК"
-                            match3 = re.search(r'\w*ФТИ\w*', value)
-                            if match3:
-                                institute = "ФТИ"
-                            match3 = re.search(r'\w*\bФизико\s*-\s*технологического\w*\b', value)
+                            match3 = re.search(r'\w*\bФизико\s*-\s*технологического\w*\b', value) or re.search(r'\w*ФТИ\w*', value)
                             if match3:
                                 institute = "ФТИ"
                             match3 = re.search(r'\w*\bИТ\s*\w*\b', value)
@@ -223,7 +218,6 @@ class MyApp(QMainWindow):
                                                None,
                                                university, groupsstring))
                             conn.commit()
-
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def update_group_list(self):
@@ -231,8 +225,17 @@ class MyApp(QMainWindow):
         cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
         self.ui.groupComboBox.clear()
+        gr_codes = []
         for group in grouplist:
-            self.ui.groupComboBox.addItem('-'.join(map(str, group)))
+            strgroup = '-'.join(map(str, group))
+            self.ui.groupComboBox.addItem(strgroup)
+            gr_code = strgroup.split('-')[0]
+            gr_codes.append(gr_code)
+        gr_codes = set(gr_codes)
+        gr_codes = sorted(gr_codes)
+        self.ui.gr1ComboBox.clear()
+        for code in gr_codes:
+            self.ui.gr1ComboBox.addItem(str(code))
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):
@@ -251,11 +254,14 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):
-        group = str(self.ui.groupComboBox.currentText())
+        group = str(self.ui.gr1ComboBox.currentText()) + '-' + str(self.ui.gr2ComboBox.currentText()) + '-' + str(self.ui.gr3ComboBox.currentText())
         day = self.ui.daySpinBox.value()
-        even = self.ui.evenCheckBox.Checked()
-        cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=%s AND even=%s AND `group` = %s",
-                       (day, even, group))
+        even = int(self.ui.evenCheckBox.isChecked())
+        try:
+            cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=%s AND even=%s AND `group` = %s",
+                           (day, even, group))
+        except Error as error:
+            print(error)
         lessons = cursor.fetchall()
         for i in range(6):
             for j in range(4):
@@ -269,7 +275,7 @@ class MyApp(QMainWindow):
 
     def parse_lessons(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        groupname = self.ui.groupComboBox.currentText()
+        groupname = str(self.ui.gr1ComboBox.currentText()) + '-' + str(self.ui.gr2ComboBox.currentText()) + '-' + str(self.ui.gr3ComboBox.currentText())
         print(groupname)
         try:
             cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
