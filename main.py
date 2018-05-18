@@ -225,17 +225,9 @@ class MyApp(QMainWindow):
         cursor.execute("SELECT group_name FROM groups")
         grouplist = cursor.fetchall()
         self.ui.groupComboBox.clear()
-        gr_codes = []
         for group in grouplist:
             strgroup = '-'.join(map(str, group))
             self.ui.groupComboBox.addItem(strgroup)
-            gr_code = strgroup.split('-')[0]
-            gr_codes.append(gr_code)
-        gr_codes = set(gr_codes)
-        gr_codes = sorted(gr_codes)
-        self.ui.gr1ComboBox.clear()
-        for code in gr_codes:
-            self.ui.gr1ComboBox.addItem(str(code))
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def download(self):
@@ -254,7 +246,7 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):
-        group = str(self.ui.gr1ComboBox.currentText()) + '-' + str(self.ui.gr2ComboBox.currentText()) + '-' + str(self.ui.gr3ComboBox.currentText())
+        group = self.ui.groupComboBox.currentText()
         day = self.ui.daySpinBox.value()
         even = int(self.ui.evenCheckBox.isChecked())
         try:
@@ -275,7 +267,7 @@ class MyApp(QMainWindow):
 
     def parse_lessons(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        groupname = str(self.ui.gr1ComboBox.currentText()) + '-' + str(self.ui.gr2ComboBox.currentText()) + '-' + str(self.ui.gr3ComboBox.currentText())
+        groupname = self.ui.groupComboBox.currentText()
         print(groupname)
         try:
             cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
