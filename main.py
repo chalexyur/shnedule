@@ -4,11 +4,10 @@
 import os
 import os.path
 import re
-import sys
 import urllib.request
 from configparser import ConfigParser
 from datetime import datetime
-
+from PyQt5 import QtCore, QtGui
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
@@ -17,7 +16,7 @@ from bs4 import BeautifulSoup
 from mysql.connector import MySQLConnection, Error
 from openpyxl import load_workbook
 from openpyxl.compat import range
-from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 def read_db_config():
     filename = 'config.ini'
@@ -70,7 +69,7 @@ try:
   past_size   int          null,
   filename    varchar(50)  null,
   sheet       varchar(50)  null,
-  title       varchar(100) null,
+  title       varchar(999) null,
   university  varchar(50)  null,
   groups      varchar(999) null
 );""")
@@ -94,7 +93,7 @@ except Error as error:
 def parse_groups(worksheet):
     ws = worksheet
     groupsstring = ""
-    for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
+    for row in ws.iter_rows(min_row=2, max_row=3, min_col=1, max_col=200):
         for cols in row:
             string = str(cols.value)
             match = re.search(r'\w*[-]\d\d[-]\d\d', string)
@@ -164,9 +163,9 @@ class MyApp(QMainWindow):
                             # print(value)
                             size = 0
                             size = os.path.getsize(fpath)
-                            print(size)
                             course = 0
                             ses = institute = "zero"
+                            prog = "бакалавриат/специалитет"
                             university = "МИРЭА"
                             match1 = re.search(r'\w*\d\w*', value)
                             if match1:
@@ -213,10 +212,14 @@ class MyApp(QMainWindow):
                             match3 = re.search(r'\w*ИУСТРО\w*', value)
                             if match3:
                                 institute = "ИУСТРО"
+
+                            match4 = re.search(r'\w*магистратуры\w*', value)
+                            if match4:
+                                prog = "магистратура"
                             groupsstring = parse_groups(ws)
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
                                            (
-                                               None, institute, None, course, ses, datetime.now(), size, fpath, sheet,
+                                               None, institute, prog, course, ses, datetime.now(), size, fpath, sheet,
                                                value,
                                                university, groupsstring))
                             conn.commit()
@@ -366,7 +369,6 @@ class MyApp(QMainWindow):
 
 if __name__ == "__main__":
     import sys
-
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
     palette = QtGui.QPalette()
@@ -380,12 +382,9 @@ if __name__ == "__main__":
     palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53, 53, 53))
     palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
     palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
-
     palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
     palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
     app.setPalette(palette)
-
-
 
     window = MyApp()
     window.show()
