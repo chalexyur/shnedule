@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 from mysql.connector import MySQLConnection, Error
 from openpyxl import load_workbook
 from openpyxl.compat import range
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 def read_db_config():
     filename = 'config.ini'
@@ -98,9 +99,9 @@ def parse_groups(worksheet):
             string = str(cols.value)
             match = re.search(r'\w*[-]\d\d[-]\d\d', string)
             if match:
-                print(string)
+                # print(string)
                 string = match[0]
-                print(string)
+                #print(string)
                 groupsstring += string + ','
                 try:
                     # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
@@ -147,21 +148,25 @@ class MyApp(QMainWindow):
         folder = "files/all/"
         qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
         print(qfiles)
-        for i in range(0, qfiles):
+        for i in range(0, 99):
             fpath = folder + str(i) + ".xlsx"
-            print(fpath)
             if not os.path.exists(fpath):
                 continue
+            print(fpath)
             wb = load_workbook(filename=fpath, read_only=True)
-            for index, sheet in enumerate(wb.sheetnames):
+            for sheet in wb.sheetnames:
                 ws = wb[sheet]
                 for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=4):
                     for cols in row:
                         value = str(cols.value)
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
-                            print(sheet)
-                            print(value)
-                            course = ses = institute = "zero"
+                            # print(sheet)
+                            # print(value)
+                            size = 0
+                            size = os.path.getsize(fpath)
+                            print(size)
+                            course = 0
+                            ses = institute = "zero"
                             university = "МИРЭА"
                             match1 = re.search(r'\w*\d\w*', value)
                             if match1:
@@ -169,6 +174,12 @@ class MyApp(QMainWindow):
                             match2 = re.search(r'\w*занятий\w*', value)
                             if match2:
                                 ses = "занятия"
+                            match2 = re.search(r'\w*зачетной\w*', value) or re.search(r'\w*зачетов\w*', value)
+                            if match2:
+                                ses = "зачётная сессия"
+                            match2 = re.search(r'\w*экзаменационной\w*', value)
+                            if match2:
+                                ses = "экзаменационная сессия"
                             match3 = re.search(r'\w*ИНТЕГУ\w*', value)
                             if match3:
                                 institute = "ИНТЕГУ"
@@ -184,11 +195,30 @@ class MyApp(QMainWindow):
                             match3 = re.search(r'\w*\bФизико\s*-\s*технологического\w*\b', value)
                             if match3:
                                 institute = "ФТИ"
+                            match3 = re.search(r'\w*\bИТ\s*\w*\b', value)
+                            if match3:
+                                institute = "ИТ"
+                            match3 = re.search(r'\w*РТС\w*', value)
+                            if match3:
+                                institute = "РТС"
+                            match3 = re.search(r'\w*ИЭС\w*', value)
+                            if match3:
+                                institute = "ИЭС"
+                            match3 = re.search(r'\w*ИЭП\w*', value)
+                            if match3:
+                                institute = "ИЭП"
+                            match3 = re.search(r'\w*ВЗО\w*', value)
+                            if match3:
+                                institute = "ИВЗО"
+                            match3 = re.search(r'\w*ИУСТРО\w*', value)
+                            if match3:
+                                institute = "ИУСТРО"
                             groupsstring = parse_groups(ws)
                             cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
                                            (
-                                           None, institute, None, course, ses, datetime.now(), None, fpath, None, value,
-                                           None, groupsstring))
+                                               None, institute, None, course, ses, datetime.now(), size, fpath, sheet,
+                                               value,
+                                               university, groupsstring))
                             conn.commit()
 
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
@@ -335,7 +365,28 @@ class MyApp(QMainWindow):
 
 
 if __name__ == "__main__":
+    import sys
+
     app = QApplication(sys.argv)
+    app.setStyle('Fusion')
+    palette = QtGui.QPalette()
+    palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Base, QtGui.QColor(15, 15, 15))
+    palette.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.ToolTipBase, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.ToolTipText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Text, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53, 53, 53))
+    palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
+    palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
+
+    palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
+    palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
+    app.setPalette(palette)
+
+
+
     window = MyApp()
     window.show()
 

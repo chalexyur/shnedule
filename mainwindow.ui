@@ -24,8 +24,8 @@
                     <rect>
                         <x>10</x>
                         <y>30</y>
-                        <width>72</width>
-                        <height>16</height>
+                        <width>90</width>
+                        <height>18</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -143,10 +143,10 @@
             <widget class="QComboBox" name="comboBox">
                 <property name="geometry">
                     <rect>
-                        <x>180</x>
+                        <x>260</x>
                         <y>0</y>
-                        <width>151</width>
-                        <height>21</height>
+                        <width>168</width>
+                        <height>25</height>
                     </rect>
                 </property>
                 <property name="font">
@@ -170,9 +170,9 @@
             <widget class="QLabel" name="weekLabel">
                 <property name="geometry">
                     <rect>
-                        <x>100</x>
+                        <x>120</x>
                         <y>0</y>
-                        <width>56</width>
+                        <width>59</width>
                         <height>16</height>
                     </rect>
                 </property>
@@ -191,8 +191,8 @@
                     <rect>
                         <x>1</x>
                         <y>1</y>
-                        <width>89</width>
-                        <height>16</height>
+                        <width>105</width>
+                        <height>18</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -204,8 +204,8 @@
                     <rect>
                         <x>461</x>
                         <y>61</y>
-                        <width>151</width>
-                        <height>23</height>
+                        <width>118</width>
+                        <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -217,8 +217,8 @@
                     <rect>
                         <x>420</x>
                         <y>310</y>
-                        <width>151</width>
-                        <height>23</height>
+                        <width>90</width>
+                        <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -228,10 +228,10 @@
             <widget class="QPushButton" name="parseButton">
                 <property name="geometry">
                     <rect>
-                        <x>750</x>
+                        <x>760</x>
                         <y>310</y>
-                        <width>271</width>
-                        <height>23</height>
+                        <width>310</width>
+                        <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -243,8 +243,8 @@
                     <rect>
                         <x>150</x>
                         <y>290</y>
-                        <width>75</width>
-                        <height>23</height>
+                        <width>87</width>
+                        <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -256,8 +256,8 @@
                     <rect>
                         <x>620</x>
                         <y>60</y>
-                        <width>167</width>
-                        <height>23</height>
+                        <width>217</width>
+                        <height>30</height>
                     </rect>
                 </property>
                 <property name="text">
@@ -269,8 +269,8 @@
                     <rect>
                         <x>589</x>
                         <y>310</y>
-                        <width>132</width>
-                        <height>21</height>
+                        <width>165</width>
+                        <height>25</height>
                     </rect>
                 </property>
                 <property name="sizePolicy">
@@ -321,8 +321,8 @@
                     <rect>
                         <x>10</x>
                         <y>430</y>
-                        <width>257</width>
-                        <height>56</height>
+                        <width>293</width>
+                        <height>64</height>
                     </rect>
                 </property>
                 <property name="title">
@@ -361,7 +361,6 @@
             <zorder>toTablesButton</zorder>
             <zorder>titleButton</zorder>
             <zorder>groupComboBox</zorder>
-            <zorder>layoutWidget</zorder>
             <zorder>label</zorder>
             <zorder>tableWidget1</zorder>
             <zorder>groupBox</zorder>
