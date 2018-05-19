@@ -129,7 +129,7 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
-        self.ui.parseButton.clicked.connect(self.parse_lessons)
+        self.ui.parseButton.clicked.connect(self.parse_lessons_for_selected_group)
         self.ui.parsAllPushButton.clicked.connect(self.parse_all)
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
@@ -242,10 +242,13 @@ class MyApp(QMainWindow):
         group_tuple = cursor.fetchall()
         group_list = []
         self.ui.groupComboBox.clear()
-        for group in group_tuple:
-            strgroup = '-'.join(map(str, group))
-            self.ui.groupComboBox.addItem(strgroup)
-            group_list.append(strgroup)
+        for x in group_tuple:
+            group_list.append(x[0])
+        group_list = sorted(group_list)
+        for group in group_list:
+            # strgroup = '-'.join(map(str, group))
+            self.ui.groupComboBox.addItem(group)
+            # group_list.append(strgroup)
         return group_list
 
     def download(self):
@@ -270,14 +273,21 @@ class MyApp(QMainWindow):
         try:
             cursor.execute("SELECT type, title, teacher, room FROM lessons WHERE day=%s AND even=%s AND `group` = %s",
                            (day, even, group))
+            lessons = cursor.fetchall()
         except Error as error:
             print(error)
-        lessons = cursor.fetchall()
+        # lessons = cursor.fetchall()
+        print(lessons)
         for i in range(6):
             for j in range(4):
-                if lessons[i][j] == ("день" or "самостолятельных" or "занятий"):
+
+                if not lessons:
+                    lesson = ""
+                else:
+                    lesson = lessons[i][j]
+                if lesson == ("день" or "самостолятельных" or "занятий"):
                     continue
-                self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lessons[i][j]))
+                self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lesson))
         self.ui.tableWidget1.setColumnWidth(0, 50)
         self.ui.tableWidget1.setColumnWidth(1, 270)
         self.ui.tableWidget1.setColumnWidth(2, 130)
@@ -302,8 +312,8 @@ class MyApp(QMainWindow):
         wb = load_workbook(filename=fname, read_only=True)
         ws = wb[sheet]
 
-        x = 0
-        y = 0
+        x = 1
+        y = 1
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
                 # strvalue = ""
@@ -317,7 +327,11 @@ class MyApp(QMainWindow):
         mar = mir + 71
         mic = x
         mac = mic + 3
-        gr = ws.cell(row=y, column=x).value
+        if not ws.cell(row=y, column=x).value:
+            gr = ""
+        else:
+            gr = ws.cell(row=y, column=x).value
+        # gr = ws.cell(row=y, column=x).value
         print(gr)
         number = 1
         for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
@@ -355,6 +369,9 @@ class MyApp(QMainWindow):
         group_list = self.update_group_list()
         for group in group_list:
             self.parse_lessons(group)
+
+    def parse_lessons_for_selected_group(self):
+        self.parse_lessons(self.ui.groupComboBox.currentText())
 
     def tle(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))

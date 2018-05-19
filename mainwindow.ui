@@ -7,7 +7,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>703</width>
-                <height>472</height>
+                <height>497</height>
             </rect>
         </property>
         <property name="windowTitle">
@@ -251,7 +251,7 @@
                         <x>0</x>
                         <y>250</y>
                         <width>402</width>
-                        <height>214</height>
+                        <height>240</height>
                     </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_4">
@@ -418,23 +418,6 @@
                                                 </property>
                                             </widget>
                                         </item>
-                                        <item row="0" column="1">
-                                            <widget class="QSpinBox" name="daySpinBox">
-                                                <property name="minimum">
-                                                    <number>1</number>
-                                                </property>
-                                                <property name="maximum">
-                                                    <number>6</number>
-                                                </property>
-                                            </widget>
-                                        </item>
-                                        <item row="0" column="2">
-                                            <widget class="QCheckBox" name="evenCheckBox">
-                                                <property name="text">
-                                                    <string>Чётная</string>
-                                                </property>
-                                            </widget>
-                                        </item>
                                         <item row="0" column="3">
                                             <widget class="QPushButton" name="toTablesButton">
                                                 <property name="minimumSize">
@@ -445,6 +428,38 @@
                                                 </property>
                                                 <property name="text">
                                                     <string>Отобразить в таблице</string>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item row="0" column="1">
+                                            <widget class="QSpinBox" name="daySpinBox">
+                                                <property name="maximumSize">
+                                                    <size>
+                                                        <width>30</width>
+                                                        <height>16777215</height>
+                                                    </size>
+                                                </property>
+                                                <property name="minimum">
+                                                    <number>1</number>
+                                                </property>
+                                                <property name="maximum">
+                                                    <number>6</number>
+                                                </property>
+                                                <property name="displayIntegerBase">
+                                                    <number>10</number>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item row="0" column="2">
+                                            <widget class="QCheckBox" name="evenCheckBox">
+                                                <property name="text">
+                                                    <string>Чётная</string>
+                                                </property>
+                                                <property name="checked">
+                                                    <bool>false</bool>
+                                                </property>
+                                                <property name="tristate">
+                                                    <bool>false</bool>
                                                 </property>
                                             </widget>
                                         </item>
