@@ -53,11 +53,11 @@ try:
   even     tinyint(1)   null,
   title    varchar(999) null,
   type     varchar(20)  null,
-  teacher  varchar(50)  null,
-  room     varchar(20)  null,
+  teacher  varchar(99)  null,
+  room     varchar(99)  null,
   weeks    varchar(50)  null,
   subgroup int(1)       null,
-  campus   varchar(50)  null
+  campus   varchar(99)  null
 );""")
     cursor.execute("""
     create table IF NOT EXISTS paths
@@ -130,6 +130,7 @@ class MyApp(QMainWindow):
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse_lessons)
+        self.ui.parsAllPushButton.clicked.connect(self.parse_all)
         self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.parse_titles)
@@ -159,8 +160,6 @@ class MyApp(QMainWindow):
                     for cols in row:
                         value = str(cols.value)
                         if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
-                            # print(sheet)
-                            # print(value)
                             size = os.path.getsize(fpath)
                             course = 0
                             ses = institute = "zero"
@@ -240,11 +239,14 @@ class MyApp(QMainWindow):
         except Error as error:
             print(error)
 
-        grouplist = cursor.fetchall()
+        group_tuple = cursor.fetchall()
+        group_list = []
         self.ui.groupComboBox.clear()
-        for group in grouplist:
+        for group in group_tuple:
             strgroup = '-'.join(map(str, group))
             self.ui.groupComboBox.addItem(strgroup)
+            group_list.append(strgroup)
+        return group_list
 
     def download(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -276,14 +278,14 @@ class MyApp(QMainWindow):
                 if lessons[i][j] == ("день" or "самостолятельных" or "занятий"):
                     continue
                 self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lessons[i][j]))
-        self.ui.tableWidget1.setColumnWidth(0, 30)
-        self.ui.tableWidget1.setColumnWidth(1, 170)
+        self.ui.tableWidget1.setColumnWidth(0, 50)
+        self.ui.tableWidget1.setColumnWidth(1, 270)
         self.ui.tableWidget1.setColumnWidth(2, 130)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
-    def parse_lessons(self):
+    def parse_lessons(self, groupname):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        groupname = self.ui.groupComboBox.currentText()
+        # groupname = self.ui.groupComboBox.currentText()
         print(groupname)
         try:
             cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
@@ -328,7 +330,7 @@ class MyApp(QMainWindow):
                 even = 0
             else:
                 even = 1
-            if "(1 подгр)" in title:
+            '''if "(1 подгр)" in title:
                 print("до: ", title)
                 subgr = 1
                 title = title.replace('(1 подгр)', '')
@@ -337,7 +339,8 @@ class MyApp(QMainWindow):
                 print("до: ", title)
                 subgr = 2
                 title = title.replace('(2 подгр)', '')
-                print("после: ", title)
+                print("после: ", title)'''
+            title = str(os.linesep.join([s for s in title.splitlines() if s]))
             try:
                 cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                     None, gr, day, number, even, title, row[1].value, row[2].value, row[3].value,
@@ -347,6 +350,11 @@ class MyApp(QMainWindow):
                 print(error)
             number += even
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+
+    def parse_all(self):
+        group_list = self.update_group_list()
+        for group in group_list:
+            self.parse_lessons(group)
 
     def tle(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
