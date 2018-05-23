@@ -258,12 +258,13 @@ class MyApp(QMainWindow):
         if not os.path.exists("files/"):
             os.makedirs("files/")
 
-        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
-            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
+        #for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
+            #urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
         for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
+            print(link.get('href'))
             urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
-        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
-            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
+        #for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
+            #urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
 
     def to_tables(self):
