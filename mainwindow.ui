@@ -185,12 +185,12 @@
      <rect>
       <x>420</x>
       <y>300</y>
-      <width>216</width>
+         <width>261</width>
       <height>33</height>
      </rect>
     </property>
     <property name="text">
-     <string>Спарсить заголовки и группы</string>
+        <string>Спарсить заголовки и группы для института</string>
     </property>
    </widget>
    <widget class="QPushButton" name="parsAllPushButton">
