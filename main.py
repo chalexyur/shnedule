@@ -4,38 +4,23 @@
 import os
 import os.path
 import re
+import sys
+from time import sleep
 import urllib.request
-from configparser import ConfigParser
 from datetime import datetime
+import functions
 
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import *
 from bs4 import BeautifulSoup
 from mysql.connector import Error
 from mysql.connector import MySQLConnection
 from openpyxl import load_workbook
 from openpyxl.compat import range
 
-
-def read_db_config():
-    filename = 'config.ini'
-    section = 'local-mysql'
-    parser = ConfigParser()
-    parser.read(filename)
-    db = {}
-    if parser.has_section(section):
-        items = parser.items(section)
-        for item in items:
-            db[item[0]] = item[1]
-    else:
-        raise Exception('{0} not found in the {1} file'.format(section, filename))
-    return db
-
-
-dbconfig = read_db_config()
+dbconfig = functions.read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
@@ -123,10 +108,39 @@ def parse_groups(worksheet, institute):
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
 
+class ExecuteThread(QThread):
+    my_signal = pyqtSignal()
+
+    def run(self):
+        html_page = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
+        soup = BeautifulSoup(html_page, "html.parser")
+        if not os.path.exists("files/"):
+            os.makedirs("files/")
+
+        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
+        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
+        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
+            print(link.get('href'))
+            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
+            sleep(2)
+        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
+        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
+        self.my_signal.emit()
+        pass
+
+
+def movetothread():
+    print(1)
+    runnable = Runnable()
+    QThreadPool.globalInstance().start(runnable)
+
+
 class MyApp(QMainWindow):
     def __init__(self):
+        # QThread.__init__(self)
         super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
+
         self.ui.setupUi(self)
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse_lessons_for_selected_group)
@@ -138,9 +152,7 @@ class MyApp(QMainWindow):
         self.ui.tgrButton.clicked.connect(self.tgr)
         self.ui.tpaButton.clicked.connect(self.tpa)
         self.ui.instituteComboBox.activated.connect(self.update_group_list)
-
         self.ui.weekLabel.setText(str(datetime.now().isocalendar()[1] - 5))
-
         self.update_institute_list()
 
     def parse_titles(self):
@@ -252,20 +264,38 @@ class MyApp(QMainWindow):
         return group_list
 
     def download(self):
+
+        # Thread(target=self.downloading_thread()).start
+
+        test.start()
+        test.started.connect(self.thread_started)
+        test.finished.connect(self.thread_finished)
+        test.my_signal.connect(self.my_event)
+
+    def thread_finished(self):
+        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+
+    def thread_started(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
+
+    def my_event(self):
+        print("sapsan")
+        pass
+
+    def download_thread(self):
         html_page = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
         soup = BeautifulSoup(html_page, "html.parser")
         if not os.path.exists("files/"):
             os.makedirs("files/")
 
-        #for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
-            #urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
+        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
+        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
         for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
             print(link.get('href'))
             urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
-        #for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
-            #urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
-        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+            sleep(2)
+        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
+        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
 
     def to_tables(self):
         group = self.ui.groupComboBox.currentText()
@@ -408,8 +438,6 @@ class MyApp(QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
-
     app = QApplication(sys.argv)
     '''app.setStyle('Fusion')
     palette = QtGui.QPalette()
@@ -426,8 +454,7 @@ if __name__ == "__main__":
     palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142, 45, 197).lighter())
     palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
     app.setPalette(palette)'''
-
     window = MyApp()
     window.show()
-
+    test = ExecuteThread()
     sys.exit(app.exec_())
