@@ -44,6 +44,7 @@ dbconfig = read_db_config()
 conn = MySQLConnection(**dbconfig)
 print(conn.is_connected())
 cursor = conn.cursor()
+global_groupname: str = "nogroup"
 
 try:
     cursor.execute("""
@@ -180,7 +181,7 @@ class ParseTitlesThread(QThread):
                             match3 = re.search(r'\w*ИНТЕГУ\w*', value)
                             if match3:
                                 institute = "ИНТЕГУ"
-                            match3 = re.search(r'\w*КБиСП\w*', value)
+                            match3 = re.search(r'\w*КБиСП\w*', value) or re.search(r'\w*КБСП\w*', value)
                             if match3:
                                 institute = "КБиСП"
                             match3 = re.search(r'\w*кибернетики\w*', value)
@@ -219,3 +220,76 @@ class ParseTitlesThread(QThread):
                                                None,
                                                university, groupsstring))
                             conn.commit()
+
+
+class ParseLessonsThread(QThread):
+    def run(self):
+        # groupname = self.ui.groupComboBox.currentText()
+        groupname = global_groupname
+        print(groupname)
+        try:
+            cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
+                           # доработать выборку
+                           ("%" + groupname + "%",))
+        except Error as error:
+            print(error)
+
+        fetch = cursor.fetchone();
+        fname = fetch[0]
+        sheet = fetch[1]
+        print(fname, sheet)
+        from openpyxl import load_workbook
+        wb = load_workbook(filename=fname, read_only=True)
+        ws = wb[sheet]
+
+        x = 1
+        y = 1
+        for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
+            for cols in row:
+                # strvalue = ""
+                # strvalue = cols.value
+                if groupname in str(cols.value):
+                    y = cols.row
+                    x = cols.column
+                    break
+
+        mir = 4
+        mar = mir + 71
+        mic = x
+        mac = mic + 3
+        if not ws.cell(row=y, column=x).value:
+            gr = ""
+        else:
+            gr = ws.cell(row=y, column=x).value
+        # gr = ws.cell(row=y, column=x).value
+        print(gr)
+        number = 1
+        for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
+            title = str(row[0].value)
+            subgr = 0
+            day = index // 12 + 1
+            if number > 6:
+                number = 1
+            if index % 2 == 0:
+                even = 0
+            else:
+                even = 1
+            '''if "(1 подгр)" in title:
+                print("до: ", title)
+                subgr = 1
+                title = title.replace('(1 подгр)', '')
+                print("после: ", title)
+            if "(2 подгр)" in title:
+                print("до: ", title)
+                subgr = 2
+                title = title.replace('(2 подгр)', '')
+                print("после: ", title)'''
+            title = str(os.linesep.join([s for s in title.splitlines() if s]))
+            try:
+                cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                    None, gr, day, number, even, title, row[1].value, row[2].value, row[3].value,
+                    None, subgr, None))
+                conn.commit()
+            except Error as error:
+                print(error)
+            number += even

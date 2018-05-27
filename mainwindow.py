@@ -22,6 +22,7 @@ from openpyxl.compat import range
 cursor = functions.cursor
 conn = functions.conn
 Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
+global_groupname = "ИКБО-06-16"
 
 
 class MyApp(QMainWindow):
@@ -44,10 +45,6 @@ class MyApp(QMainWindow):
         self.update_institute_list()
 
     def parse_titles(self):
-        # self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-
-        # print("parsing complete")
-        # self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
         ParseTitlesThread.start()
         ParseTitlesThread.started.connect(self.thread_started)
         ParseTitlesThread.finished.connect(self.thread_finished)
@@ -91,6 +88,7 @@ class MyApp(QMainWindow):
 
     def thread_finished(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+        print("thread finished")
 
     def thread_started(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
@@ -112,7 +110,6 @@ class MyApp(QMainWindow):
         print(lessons)
         for i in range(6):
             for j in range(4):
-
                 if not lessons:
                     lesson = ""
                 else:
@@ -126,81 +123,20 @@ class MyApp(QMainWindow):
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
     def parse_lessons(self, groupname):
-        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        # groupname = self.ui.groupComboBox.currentText()
-        print(groupname)
-        try:
-            cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
-                           # доработать выборку
-                           ("%" + groupname + "%",))
-        except Error as error:
-            print(error)
+        functions.global_groupname = groupname
 
-        fetch = cursor.fetchone();
-        fname = fetch[0]
-        sheet = fetch[1]
-        print(fname, sheet)
-        from openpyxl import load_workbook
-        wb = load_workbook(filename=fname, read_only=True)
-        ws = wb[sheet]
-
-        x = 1
-        y = 1
-        for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
-            for cols in row:
-                # strvalue = ""
-                # strvalue = cols.value
-                if groupname in str(cols.value):
-                    y = cols.row
-                    x = cols.column
-                    break
-
-        mir = 4
-        mar = mir + 71
-        mic = x
-        mac = mic + 3
-        if not ws.cell(row=y, column=x).value:
-            gr = ""
-        else:
-            gr = ws.cell(row=y, column=x).value
-        # gr = ws.cell(row=y, column=x).value
-        print(gr)
-        number = 1
-        for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
-            title = str(row[0].value)
-            subgr = 0
-            day = index // 12 + 1
-            if number > 6:
-                number = 1
-            if index % 2 == 0:
-                even = 0
-            else:
-                even = 1
-            '''if "(1 подгр)" in title:
-                print("до: ", title)
-                subgr = 1
-                title = title.replace('(1 подгр)', '')
-                print("после: ", title)
-            if "(2 подгр)" in title:
-                print("до: ", title)
-                subgr = 2
-                title = title.replace('(2 подгр)', '')
-                print("после: ", title)'''
-            title = str(os.linesep.join([s for s in title.splitlines() if s]))
-            try:
-                cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                    None, gr, day, number, even, title, row[1].value, row[2].value, row[3].value,
-                    None, subgr, None))
-                conn.commit()
-            except Error as error:
-                print(error)
-            number += even
-        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+        ParseLessonsThread.started.connect(self.thread_started)
+        ParseLessonsThread.finished.connect(self.thread_finished)
+        ParseLessonsThread.start()
+        ParseLessonsThread.wait(200)
 
     def parse_all(self):
         group_list = self.update_group_list()
+        print(group_list)
         for group in group_list:
+            print("before", group)
             self.parse_lessons(group)
+            print("after")
 
     def parse_lessons_for_selected_group(self):
         self.parse_lessons(self.ui.groupComboBox.currentText())
@@ -259,4 +195,5 @@ if __name__ == "__main__":
     window.show()
     DownloadThread = functions.DownloadThread()
     ParseTitlesThread = functions.ParseTitlesThread()
+    ParseLessonsThread = functions.ParseLessonsThread()
     sys.exit(app.exec_())
