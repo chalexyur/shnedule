@@ -26,7 +26,6 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType("mainwindow.ui")
 
 class MyApp(QMainWindow):
     def __init__(self):
-        # QThread.__init__(self)
         super(MyApp, self).__init__()
         self.ui = Ui_MainWindow()
 
@@ -45,81 +44,13 @@ class MyApp(QMainWindow):
         self.update_institute_list()
 
     def parse_titles(self):
-        self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
-        folder = "files/"
-        qfiles = len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))])
-        print(qfiles)
-        for i in range(0, 99):
-            fpath = folder + str(i) + ".xlsx"
-            if not os.path.exists(fpath):
-                continue
-            print(fpath)
-            wb = load_workbook(filename=fpath, read_only=True)
-            for sheet in wb.sheetnames:
-                ws = wb[sheet]
-                for row in ws.iter_rows(min_row=1, max_row=2, min_col=1, max_col=4):
-                    for cols in row:
-                        value = str(cols.value)
-                        if re.match(r"\bр\s*а\s*с\s*п\s*и\s*с\s*а\s*н\s*и\s*е\b", value, re.IGNORECASE):
-                            size = os.path.getsize(fpath)
-                            course = 0
-                            ses = institute = "zero"
-                            prog = "бакалавриат/специалитет"
-                            university = "МИРЭА"
-                            match1 = re.search(r'\w*\d\w*', value)
-                            if match1:
-                                course = match1[0]
-                            match2 = re.search(r'\w*занятий\w*', value)
-                            if match2:
-                                ses = "занятия"
-                            match2 = re.search(r'\w*зачетной\w*', value) or re.search(r'\w*зачетов\w*', value)
-                            if match2:
-                                ses = "зачётная сессия"
-                            match2 = re.search(r'\w*экзаменационной\w*', value)
-                            if match2:
-                                ses = "экзаменационная сессия"
-                            match3 = re.search(r'\w*ИНТЕГУ\w*', value)
-                            if match3:
-                                institute = "ИНТЕГУ"
-                            match3 = re.search(r'\w*КБиСП\w*', value)
-                            if match3:
-                                institute = "КБиСП"
-                            match3 = re.search(r'\w*кибернетики\w*', value)
-                            if match3:
-                                institute = "ИК"
-                            match3 = re.search(r'\w*\bФизико\s*-\s*технологического\w*\b', value) or re.search(r'\w*ФТИ\w*', value)
-                            if match3:
-                                institute = "ФТИ"
-                            match3 = re.search(r'\w*\bИТ\s*\w*\b', value)
-                            if match3:
-                                institute = "ИТ"
-                            match3 = re.search(r'\w*РТС\w*', value)
-                            if match3:
-                                institute = "РТС"
-                            match3 = re.search(r'\w*ИЭС\w*', value)
-                            if match3:
-                                institute = "ИЭС"
-                            match3 = re.search(r'\w*ИЭП\w*', value)
-                            if match3:
-                                institute = "ИЭП"
-                            match3 = re.search(r'\w*ВЗО\w*', value)
-                            if match3:
-                                institute = "ИВЗО"
-                            match3 = re.search(r'\w*ИУСТРО\w*', value)
-                            if match3:
-                                institute = "ИУСТРО"
+        # self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
 
-                            match4 = re.search(r'\w*магистратуры\w*', value)
-                            if match4:
-                                prog = "магистратура"
-                            groupsstring = functions.parse_groups(ws, institute)
-                            cursor.execute("INSERT INTO paths VALUES (%s,%s, %s, %s, %s, %s, %s ,%s,%s,%s,%s,%s)",
-                                           (
-                                               None, institute, prog, course, ses, datetime.now(), size, fpath, sheet,
-                                               None,
-                                               university, groupsstring))
-                            conn.commit()
-        self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+        # print("parsing complete")
+        # self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
+        ParseTitlesThread.start()
+        ParseTitlesThread.started.connect(self.thread_started)
+        ParseTitlesThread.finished.connect(self.thread_finished)
 
     def update_institute_list(self):
         cursor.execute("SELECT institute FROM paths")
@@ -153,10 +84,10 @@ class MyApp(QMainWindow):
         return group_list
 
     def download(self):
-        test.start()
-        test.started.connect(self.thread_started)
-        test.finished.connect(self.thread_finished)
-        test.my_signal.connect(self.my_event)
+        DownloadThread.start()
+        DownloadThread.started.connect(self.thread_started)
+        DownloadThread.finished.connect(self.thread_finished)
+        DownloadThread.my_signal.connect(self.my_event)
 
     def thread_finished(self):
         self.ui.centralwidget.setCursor(QCursor(Qt.ArrowCursor))
@@ -165,22 +96,7 @@ class MyApp(QMainWindow):
         self.ui.centralwidget.setCursor(QCursor(Qt.WaitCursor))
 
     def my_event(self):
-        print("sapsan")
-
-    def download_thread(self):
-        html_page = urllib.request.urlopen('https://www.mirea.ru/education/schedule-main/schedule/').read()
-        soup = BeautifulSoup(html_page, "html.parser")
-        if not os.path.exists("files/"):
-            os.makedirs("files/")
-
-        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xls$")})):
-        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xls")
-        for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
-            print(link.get('href'))
-            urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
-            sleep(2)
-        # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
-        # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
+        print("download complete")
 
     def to_tables(self):
         group = self.ui.groupComboBox.currentText()
@@ -341,5 +257,6 @@ if __name__ == "__main__":
     app.setPalette(palette)'''
     window = MyApp()
     window.show()
-    test = functions.ExecuteThread()
+    DownloadThread = functions.DownloadThread()
+    ParseTitlesThread = functions.ParseTitlesThread()
     sys.exit(app.exec_())

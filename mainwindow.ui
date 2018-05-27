@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>703</width>
-    <height>497</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,7 +163,7 @@
     </property>
     <item>
      <property name="text">
-      <string>11 (16.04 - 22.04)</string>
+      <string>17 (28.05 - 03.06)</string>
      </property>
     </item>
    </widget>
@@ -185,12 +185,12 @@
      <rect>
       <x>420</x>
       <y>300</y>
-         <width>261</width>
+      <width>261</width>
       <height>33</height>
      </rect>
     </property>
     <property name="text">
-        <string>Спарсить заголовки и группы для института</string>
+     <string>Спарсить заголовки и группы для института</string>
     </property>
    </widget>
    <widget class="QPushButton" name="parsAllPushButton">
@@ -215,7 +215,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>250</y>
       <width>402</width>
       <height>257</height>
@@ -326,12 +326,12 @@
      </item>
      <item row="1" column="2">
       <widget class="QPushButton" name="updGlButton">
-          <property name="minimumSize">
-              <size>
-                  <width>0</width>
-                  <height>30</height>
-              </size>
-          </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
        <property name="text">
         <string>Обновить список</string>
        </property>
@@ -358,12 +358,12 @@
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
          <widget class="QPushButton" name="parseButton">
-             <property name="minimumSize">
-                 <size>
-                     <width>0</width>
-                     <height>30</height>
-                 </size>
-             </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="text">
            <string>Спарсить расписание</string>
           </property>
@@ -455,12 +455,12 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
          <widget class="QPushButton" name="tgrButton">
-             <property name="minimumSize">
-                 <size>
-                     <width>0</width>
-                     <height>30</height>
-                 </size>
-             </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="text">
            <string>groups</string>
           </property>
@@ -468,12 +468,12 @@
         </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="tpaButton">
-             <property name="minimumSize">
-                 <size>
-                     <width>0</width>
-                     <height>30</height>
-                 </size>
-             </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="text">
            <string>paths</string>
           </property>
@@ -481,12 +481,12 @@
         </item>
         <item row="0" column="2">
          <widget class="QPushButton" name="tleButton">
-             <property name="minimumSize">
-                 <size>
-                     <width>0</width>
-                     <height>30</height>
-                 </size>
-             </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
           <property name="text">
            <string>lessons</string>
           </property>
@@ -497,11 +497,11 @@
      </item>
     </layout>
    </widget>
-      <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>0</y>
+      <x>10</x>
+      <y>10</y>
       <width>183</width>
       <height>19</height>
      </rect>
@@ -530,7 +530,7 @@
     </layout>
    </widget>
    <zorder>layoutWidget</zorder>
-      <zorder>layoutWidget</zorder>
+   <zorder>layoutWidget</zorder>
    <zorder>comboBox</zorder>
    <zorder>dwnldButton</zorder>
    <zorder>titleButton</zorder>

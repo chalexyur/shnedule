@@ -1,4 +1,4 @@
 ### shnedule
 
-- [x] correct group program
+- [ ] correct group program
 - [ ] keep filenames
