@@ -138,7 +138,6 @@ class ExecuteThread(QThread):
         for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".xlsx$")})):
             print(link.get('href'))
             urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".xlsx")
-            sleep(2)
         # for index, link in enumerate(soup.findAll('a', attrs={'href': re.compile(".pdf$")})):
         # urllib.request.urlretrieve(link.get('href'), "files/" + str(index) + ".pdf")
         self.my_signal.emit()
