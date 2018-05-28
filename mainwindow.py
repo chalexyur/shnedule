@@ -176,7 +176,7 @@ class MyApp(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    '''app.setStyle('Fusion')
+    app.setStyle('Fusion')
     palette = QPalette()
     palette.setColor(QPalette.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.WindowText, Qt.white)
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     palette.setColor(QPalette.BrightText, Qt.red)
     palette.setColor(QPalette.Highlight, QColor(142, 45, 197).lighter())
     palette.setColor(QPalette.HighlightedText, Qt.black)
-    app.setPalette(palette)'''
+    app.setPalette(palette)
     window = MyApp()
     window.show()
     DownloadThread = functions.DownloadThread()

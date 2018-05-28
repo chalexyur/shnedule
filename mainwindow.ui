@@ -6,541 +6,544 @@
    <rect>
     <x>0</x>
     <y>0</y>
-       <width>699</width>
-       <height>404</height>
+    <width>867</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
-      <string>SHNEDULE</string>
+   <string>SHNEDULE</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>icon.png</normaloff>icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-      <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-              <widget class="QPushButton" name="dwnldButton">
-                  <property name="minimumSize">
-                      <size>
-                          <width>100</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="text">
-                      <string>Скачать файлы</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="1">
-              <widget class="QPushButton" name="titleButton">
-                  <property name="minimumSize">
-                      <size>
-                          <width>120</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="text">
-                      <string>Спарсить заголовки и группы</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="2">
-              <widget class="QLabel" name="label_3">
-                  <property name="minimumSize">
-                      <size>
-                          <width>70</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="maximumSize">
-                      <size>
-                          <width>70</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="text">
-                      <string>Институт:</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="3">
-              <widget class="QComboBox" name="instituteComboBox">
-                  <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                      </sizepolicy>
-                  </property>
-                  <property name="baseSize">
-                      <size>
-                          <width>100</width>
-                          <height>0</height>
-                      </size>
-                  </property>
-                  <property name="font">
-                      <font>
-                          <family>Consolas</family>
-                          <pointsize>10</pointsize>
-                      </font>
-                  </property>
-                  <property name="editable">
-                      <bool>true</bool>
-                  </property>
-                  <property name="currentText">
-                      <string/>
-                  </property>
-                  <property name="insertPolicy">
-                      <enum>QComboBox::NoInsert</enum>
-                  </property>
-                  <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                  </property>
-                  <property name="minimumContentsLength">
-                      <number>7</number>
-                  </property>
-                  <property name="frame">
-                      <bool>true</bool>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="4">
-              <widget class="QLabel" name="label_4">
-                  <property name="minimumSize">
-                      <size>
-                          <width>60</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="maximumSize">
-                      <size>
-                          <width>60</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="text">
-                      <string>Группа:</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="5">
-              <widget class="QComboBox" name="groupComboBox">
-                  <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                      </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                      <size>
-                          <width>100</width>
-                          <height>0</height>
-                      </size>
-                  </property>
-                  <property name="baseSize">
-                      <size>
-                          <width>100</width>
-                          <height>0</height>
-                      </size>
-                  </property>
-                  <property name="font">
-                      <font>
-                          <family>Consolas</family>
-                          <pointsize>10</pointsize>
-                      </font>
-                  </property>
-                  <property name="editable">
-                      <bool>true</bool>
-                  </property>
-                  <property name="currentText">
-                      <string/>
-                  </property>
-                  <property name="maxVisibleItems">
-                      <number>10</number>
-                  </property>
-                  <property name="insertPolicy">
-                      <enum>QComboBox::NoInsert</enum>
-                  </property>
-                  <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                  </property>
-                  <property name="minimumContentsLength">
-                      <number>15</number>
-                  </property>
-                  <property name="frame">
-                      <bool>true</bool>
-                  </property>
-              </widget>
-          </item>
-          <item row="0" column="6">
-              <widget class="QPushButton" name="updGlButton">
-                  <property name="minimumSize">
-                      <size>
-                          <width>30</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="maximumSize">
-                      <size>
-                          <width>30</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="font">
-                      <font>
-                          <family>Segoe UI</family>
-                          <pointsize>18</pointsize>
-                          <weight>50</weight>
-                          <italic>false</italic>
-                          <bold>false</bold>
-                      </font>
-                  </property>
-                  <property name="text">
-                      <string>↻</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-              <widget class="QPushButton" name="parsAllPushButton">
-                  <property name="minimumSize">
-                      <size>
-                          <width>0</width>
-                          <height>30</height>
-                      </size>
-                  </property>
-                  <property name="text">
-                      <string>Спарсит расписание для иститута</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="1" column="2" rowspan="2" colspan="5">
-              <widget class="QGroupBox" name="groupBox_2">
-                  <property name="title">
-                      <string>Работа с выбранной группой</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_2">
-                      <item row="0" column="0" colspan="2">
-                          <widget class="QPushButton" name="parseButton">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>0</width>
-                                      <height>30</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>Спарсить расписание</string>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="0" column="2" colspan="2">
-                          <spacer name="horizontalSpacer">
-                              <property name="orientation">
-                                  <enum>Qt::Horizontal</enum>
-                              </property>
-                              <property name="sizeHint" stdset="0">
-                                  <size>
-                                      <width>251</width>
-                                      <height>17</height>
-                                  </size>
-                              </property>
-                          </spacer>
-                      </item>
-                      <item row="1" column="0">
-                          <widget class="QLabel" name="label">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>80</width>
-                                      <height>0</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>День недели:</string>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="1" column="1">
-                          <widget class="QSpinBox" name="daySpinBox">
-                              <property name="maximumSize">
-                                  <size>
-                                      <width>30</width>
-                                      <height>16777215</height>
-                                  </size>
-                              </property>
-                              <property name="minimum">
-                                  <number>1</number>
-                              </property>
-                              <property name="maximum">
-                                  <number>6</number>
-                              </property>
-                              <property name="displayIntegerBase">
-                                  <number>10</number>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="1" column="2">
-                          <widget class="QCheckBox" name="evenCheckBox">
-                              <property name="text">
-                                  <string>Чётная</string>
-                              </property>
-                              <property name="checked">
-                                  <bool>false</bool>
-                              </property>
-                              <property name="tristate">
-                                  <bool>false</bool>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="1" column="3">
-                          <widget class="QPushButton" name="toTablesButton">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>150</width>
-                                      <height>30</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>Отобразить в таблице</string>
-                              </property>
-                          </widget>
-                      </item>
-                  </layout>
-              </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-              <widget class="QGroupBox" name="groupBox">
-                  <property name="title">
-                      <string>TRUNCATE</string>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_4">
-                      <item row="0" column="0">
-                          <widget class="QPushButton" name="tgrButton">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>0</width>
-                                      <height>30</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>groups</string>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="0" column="1">
-                          <widget class="QPushButton" name="tpaButton">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>0</width>
-                                      <height>30</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>paths</string>
-                              </property>
-                          </widget>
-                      </item>
-                      <item row="0" column="2">
-                          <widget class="QPushButton" name="tleButton">
-                              <property name="minimumSize">
-                                  <size>
-                                      <width>0</width>
-                                      <height>30</height>
-                                  </size>
-                              </property>
-                              <property name="text">
-                                  <string>lessons</string>
-                              </property>
-                          </widget>
-                      </item>
-                  </layout>
-              </widget>
-          </item>
-          <item row="3" column="0">
-              <widget class="QLabel" name="label_2">
-                  <property name="text">
-                      <string>Текущая неделя:</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="3" column="1">
-              <widget class="QLabel" name="weekLabel">
-                  <property name="font">
-                      <font>
-                          <weight>75</weight>
-                          <bold>true</bold>
-                      </font>
-                  </property>
-                  <property name="text">
-                      <string>TextLabel</string>
-                  </property>
-              </widget>
-          </item>
-          <item row="3" column="2" colspan="2">
-              <widget class="QComboBox" name="comboBox">
-                  <property name="font">
-                      <font>
-                          <family>Consolas</family>
-                          <pointsize>10</pointsize>
-                      </font>
-                  </property>
-                  <property name="mouseTracking">
-                      <bool>false</bool>
-                  </property>
-                  <property name="frame">
-                      <bool>true</bool>
-                  </property>
-                  <item>
-                      <property name="text">
-                          <string>17 (28.05 - 03.06)</string>
-                      </property>
-                  </item>
-              </widget>
-          </item>
-          <item row="4" column="0" colspan="7">
-              <widget class="QTableWidget" name="tableWidget1">
-                  <property name="font">
-                      <font>
-                          <pointsize>8</pointsize>
-                      </font>
-                  </property>
-                  <property name="frameShape">
-                      <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                      <enum>QFrame::Sunken</enum>
-                  </property>
-                  <property name="lineWidth">
-                      <number>1</number>
-                  </property>
-                  <property name="midLineWidth">
-                      <number>0</number>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="horizontalScrollBarPolicy">
-                      <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="sizeAdjustPolicy">
-                      <enum>QAbstractScrollArea::AdjustToContents</enum>
-                  </property>
-                  <property name="editTriggers">
-                      <set>QAbstractItemView::AllEditTriggers</set>
-                  </property>
-                  <property name="alternatingRowColors">
-                      <bool>false</bool>
-                  </property>
-                  <property name="selectionMode">
-                      <enum>QAbstractItemView::NoSelection</enum>
-                  </property>
-                  <property name="showGrid">
-                      <bool>true</bool>
-                  </property>
-                  <property name="gridStyle">
-                      <enum>Qt::SolidLine</enum>
-                  </property>
-                  <property name="wordWrap">
-                      <bool>true</bool>
-                  </property>
-                  <property name="cornerButtonEnabled">
-                      <bool>true</bool>
-                  </property>
-                  <attribute name="horizontalHeaderVisible">
-                      <bool>true</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                      <number>25</number>
-                  </attribute>
-                  <attribute name="horizontalHeaderMinimumSectionSize">
-                      <number>25</number>
-                  </attribute>
-                  <attribute name="horizontalHeaderStretchLastSection">
-                      <bool>true</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderStretchLastSection">
-                      <bool>true</bool>
-                  </attribute>
-                  <row>
-                      <property name="text">
-                          <string>I</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <row>
-                      <property name="text">
-                          <string>II</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <row>
-                      <property name="text">
-                          <string>III</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <row>
-                      <property name="text">
-                          <string>IV</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <row>
-                      <property name="text">
-                          <string>V</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <row>
-                      <property name="text">
-                          <string>VI</string>
-                      </property>
-                      <property name="textAlignment">
-                          <set>AlignCenter</set>
-                      </property>
-                  </row>
-                  <column>
-                      <property name="text">
-                          <string>Тип</string>
-                      </property>
-                  </column>
-                  <column>
-                      <property name="text">
-                          <string>Пара</string>
-                      </property>
-                  </column>
-                  <column>
-                      <property name="text">
-                          <string>Препод</string>
-                      </property>
-                  </column>
-                  <column>
-                      <property name="text">
-                          <string>Аудитория</string>
-                      </property>
-                  </column>
-              </widget>
-          </item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="dwnldButton">
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Скачать файлы</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="titleButton">
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Спарсить заголовки и группы</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="minimumSize">
+       <size>
+        <width>70</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Институт:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QComboBox" name="instituteComboBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="editable">
+       <bool>true</bool>
+      </property>
+      <property name="currentText">
+       <string/>
+      </property>
+      <property name="insertPolicy">
+       <enum>QComboBox::NoInsert</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToContents</enum>
+      </property>
+      <property name="minimumContentsLength">
+       <number>7</number>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QLabel" name="label_4">
+      <property name="minimumSize">
+       <size>
+        <width>60</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>60</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Группа:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QComboBox" name="groupComboBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="editable">
+       <bool>true</bool>
+      </property>
+      <property name="currentText">
+       <string/>
+      </property>
+      <property name="maxVisibleItems">
+       <number>10</number>
+      </property>
+      <property name="insertPolicy">
+       <enum>QComboBox::NoInsert</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToContents</enum>
+      </property>
+      <property name="minimumContentsLength">
+       <number>15</number>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QPushButton" name="updGlButton">
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>18</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>↻</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QPushButton" name="parsAllPushButton">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Спарсит расписание для иститута</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2" rowspan="2" colspan="5">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Работа с выбранной группой</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QPushButton" name="parseButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Спарсить расписание</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" colspan="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>251</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>День недели:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="daySpinBox">
+         <property name="maximumSize">
+          <size>
+           <width>30</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>6</number>
+         </property>
+         <property name="displayIntegerBase">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="evenCheckBox">
+         <property name="text">
+          <string>Чётная</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="toTablesButton">
+         <property name="minimumSize">
+          <size>
+           <width>260</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Отобразить в таблице</string>
+         </property>
+        </widget>
+       </item>
       </layout>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>TRUNCATE</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="tgrButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>groups</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="tpaButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>paths</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="tleButton">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>lessons</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Текущая неделя:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="weekLabel">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" colspan="2">
+     <widget class="QComboBox" name="comboBox">
+      <property name="font">
+       <font>
+        <family>Consolas</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>false</bool>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <item>
+       <property name="text">
+        <string>17 (28.05 - 03.06)</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="7">
+     <widget class="QTableWidget" name="tableWidget1">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::AllEditTriggers</set>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>false</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::NoSelection</enum>
+      </property>
+      <property name="showGrid">
+       <bool>true</bool>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="cornerButtonEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>25</number>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>25</number>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>I</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>II</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>III</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>IV</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>V</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>VI</string>
+       </property>
+       <property name="textAlignment">
+        <set>AlignCenter</set>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Тип</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Пара</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Препод</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Аудитория</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+   <zorder>instituteComboBox</zorder>
+   <zorder>groupComboBox</zorder>
+   <zorder>updGlButton</zorder>
+   <zorder>groupBox_2</zorder>
+   <zorder>groupBox</zorder>
    <zorder>comboBox</zorder>
    <zorder>dwnldButton</zorder>
    <zorder>titleButton</zorder>
    <zorder>tableWidget1</zorder>
    <zorder>parsAllPushButton</zorder>
-      <zorder>label_3</zorder>
-      <zorder>label_4</zorder>
-      <zorder>weekLabel</zorder>
-      <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_4</zorder>
+   <zorder>weekLabel</zorder>
+   <zorder>label_2</zorder>
   </widget>
  </widget>
  <resources/>
