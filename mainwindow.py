@@ -28,7 +28,6 @@ class MyApp(QMainWindow):
         self.ui.dwnldButton.clicked.connect(self.download)
         self.ui.parseButton.clicked.connect(self.parse_lessons_for_selected_group)
         self.ui.parsAllPushButton.clicked.connect(self.parse_all)
-        self.ui.updGlButton.clicked.connect(self.update_group_list)
         self.ui.toTablesButton.clicked.connect(self.to_tables)
         self.ui.titleButton.clicked.connect(self.parse_titles)
         self.ui.tleButton.clicked.connect(self.tle)

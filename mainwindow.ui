@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SHNEDULE</string>
+      <string>Расписыч</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -172,34 +172,6 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="6">
-     <widget class="QPushButton" name="updGlButton">
-      <property name="minimumSize">
-       <size>
-        <width>30</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>30</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>18</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>↻</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QPushButton" name="parsAllPushButton">
       <property name="minimumSize">
@@ -213,7 +185,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="2" rowspan="2" colspan="5">
+       <item row="1" column="2" rowspan="2" colspan="4">
      <widget class="QGroupBox" name="groupBox_2">
       <property name="title">
        <string>Работа с выбранной группой</string>
@@ -395,7 +367,7 @@
       </item>
      </widget>
     </item>
-    <item row="4" column="0" colspan="7">
+       <item row="4" column="0" colspan="6">
      <widget class="QTableWidget" name="tableWidget1">
       <property name="font">
        <font>
@@ -532,7 +504,6 @@
    </layout>
    <zorder>instituteComboBox</zorder>
    <zorder>groupComboBox</zorder>
-   <zorder>updGlButton</zorder>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox</zorder>
    <zorder>comboBox</zorder>
