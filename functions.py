@@ -1,23 +1,12 @@
-from configparser import ConfigParser
-from mysql.connector import Error
-from mysql.connector import MySQLConnection
-from time import sleep
-import urllib.request
-from bs4 import BeautifulSoup
-from datetime import datetime
-from PyQt5.QtCore import *
 import os
 import os.path
 import re
-import sys
-from time import sleep
 import urllib.request
+import urllib.request
+from configparser import ConfigParser
 from datetime import datetime
 
-from PyQt5 import uic
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 from bs4 import BeautifulSoup
 from mysql.connector import Error
 from mysql.connector import MySQLConnection
@@ -106,19 +95,11 @@ def parse_groups(worksheet, institute):
             string = str(cols.value)
             match = re.search(r'\w*[-]\d\d[-]\d\d', string)
             if match:
-                # print(string)
                 string = match[0]
-                # print(gr_code)
-                # print(string)
                 groupsstring += string + ','
                 try:
-                    # cursor.execute("INSERT INTO groups VALUES (%s, %s, %s, %s, %s, %s, %s,%s)",
-                    # (None, group[0], group[1], int(group[2]), None, None, None, None))
                     cursor.execute("INSERT IGNORE INTO groups VALUES (%s, %s, %s, %s, %s)",
                                    (None, string, None, institute, None))
-                    # (group[0], group[1], group[2]))
-                    # cursor.execute("REPLACE INTO groups SET name=%s, code=%s, year=%s", (group[0], group[1], group[2]))
-                    # cursor.execute("INSERT INTO groups SET name=%s", (group[0]))
                 except Error as error:
                     print(error)
     conn.commit()
@@ -224,12 +205,10 @@ class ParseTitlesThread(QThread):
 
 class ParseLessonsThread(QThread):
     def run(self):
-        # groupname = self.ui.groupComboBox.currentText()
         groupname = global_groupname
         print(groupname)
         try:
             cursor.execute("SELECT filename, sheet FROM paths WHERE (groups LIKE %s AND ses='занятия')",
-                           # доработать выборку
                            ("%" + groupname + "%",))
         except Error as error:
             print(error)
@@ -246,8 +225,6 @@ class ParseLessonsThread(QThread):
         y = 1
         for row in ws.iter_rows(min_row=2, max_row=2, min_col=1, max_col=200):
             for cols in row:
-                # strvalue = ""
-                # strvalue = cols.value
                 if groupname in str(cols.value):
                     y = cols.row
                     x = cols.column
@@ -261,7 +238,6 @@ class ParseLessonsThread(QThread):
             gr = ""
         else:
             gr = ws.cell(row=y, column=x).value
-        # gr = ws.cell(row=y, column=x).value
         print(gr)
         number = 1
         for index, row in enumerate(ws.iter_rows(min_row=mir, max_row=mar, min_col=mic, max_col=mac)):
@@ -274,16 +250,6 @@ class ParseLessonsThread(QThread):
                 even = 0
             else:
                 even = 1
-            '''if "(1 подгр)" in title:
-                print("до: ", title)
-                subgr = 1
-                title = title.replace('(1 подгр)', '')
-                print("после: ", title)
-            if "(2 подгр)" in title:
-                print("до: ", title)
-                subgr = 2
-                title = title.replace('(2 подгр)', '')
-                print("после: ", title)'''
             title = str(os.linesep.join([s for s in title.splitlines() if s]))
             try:
                 cursor.execute("INSERT INTO lessons VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (

@@ -1,23 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-import os.path
-import re
 import sys
-from time import sleep
-import urllib.request
 from datetime import datetime
-import functions
 
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from bs4 import BeautifulSoup
 from mysql.connector import Error
-from openpyxl import load_workbook
 from openpyxl.compat import range
+
+import functions
 
 cursor = functions.cursor
 conn = functions.conn
@@ -75,9 +69,7 @@ class MyApp(QMainWindow):
             group_list.append(x[0])
         group_list = sorted(group_list)
         for group in group_list:
-            # strgroup = '-'.join(map(str, group))
             self.ui.groupComboBox.addItem(group)
-            # group_list.append(strgroup)
         return group_list
 
     def download(self):
@@ -106,7 +98,6 @@ class MyApp(QMainWindow):
             lessons = cursor.fetchall()
         except Error as error:
             print(error)
-        # lessons = cursor.fetchall()
         print(lessons)
         for i in range(6):
             for j in range(4):
@@ -114,12 +105,10 @@ class MyApp(QMainWindow):
                     lesson = ""
                 else:
                     lesson = lessons[i][j]
-                if lesson == ("день" or "самостолятельных" or "занятий"):
-                    continue
                 self.ui.tableWidget1.setItem(i, j, QTableWidgetItem(lesson))
         self.ui.tableWidget1.setColumnWidth(0, 50)
-        self.ui.tableWidget1.setColumnWidth(1, 270)
-        self.ui.tableWidget1.setColumnWidth(2, 130)
+        self.ui.tableWidget1.setColumnWidth(1, 470)
+        self.ui.tableWidget1.setColumnWidth(2, 230)
         self.ui.tableWidget1.setColumnWidth(3, 50)
 
     def parse_lessons(self, groupname):
